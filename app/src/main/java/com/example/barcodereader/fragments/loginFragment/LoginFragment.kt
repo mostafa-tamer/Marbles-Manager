@@ -5,14 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.barcodereader.R
 import com.example.barcodereader.databinding.FragmentLoginBinding
-import com.example.barcodereader.databinding.SavedUseresViewHolderBinding
+import com.example.barcodereader.databinding.FragmentLoginSavedUserButtonBinding
+import com.example.barcodereader.databinding.FragmentLoginSavedUsersViewHolderBinding
 import com.example.barcodereader.utils.CustomToast
 import com.udacity.asteroidradar.database.TopSoftwareDatabase
 
@@ -49,11 +47,11 @@ class LoginFragment : Fragment() {
                 viewModel.getSavedUsers().observe(viewLifecycleOwner) {
                     it?.let {
                         if (it.isNotEmpty()) {
-                            val savedUsersViewHolderBinding =
-                                SavedUseresViewHolderBinding.inflate(layoutInflater)
+                            val fragmentLoginSavedUsersViewHolderBinding =
+                                FragmentLoginSavedUsersViewHolderBinding.inflate(layoutInflater)
                             val alertDialog = AlertDialog.Builder(requireContext())
                                 .setTitle("Saved Users")
-                                .setView(savedUsersViewHolderBinding.root)
+                                .setView(fragmentLoginSavedUsersViewHolderBinding.root)
                                 .setPositiveButton("OK") { _, _ -> }
                                 .setNegativeButton("Clear") { _, _ ->
                                     viewModel.clearSavedUsersData()
@@ -64,18 +62,14 @@ class LoginFragment : Fragment() {
                                 }.show()
 
                             for (i in it) {
-                                val button = Button(requireContext())
-                                val frameLayout = FrameLayout(requireContext())
-                                frameLayout.setPadding(15, 15, 15, 15)
-                                button.text = i.userName
-                                button.setTextColor(resources.getColor(R.color.white))
-                                button.background =
-                                    resources.getDrawable(R.drawable.saved_users_dialog_buttons)
+                                val fragmentLoginSavedUserButtonBinding =
+                                    FragmentLoginSavedUserButtonBinding.inflate(layoutInflater)
 
-                                savedUsersViewHolderBinding.container.addView(frameLayout)
-                                savedUsersViewHolderBinding.container.addView(button)
+                                fragmentLoginSavedUsersViewHolderBinding.container.addView(
+                                    fragmentLoginSavedUserButtonBinding.root
+                                )
 
-                                button.setOnClickListener {
+                                fragmentLoginSavedUserButtonBinding.root.setOnClickListener {
                                     binding.username.setText(i.userName)
                                     binding.password.setText(i.password)
                                     binding.token.setText(i.token)

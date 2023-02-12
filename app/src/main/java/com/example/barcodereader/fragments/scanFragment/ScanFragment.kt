@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.barcodereader.databinding.FragmentScanBinding
-import com.example.barcodereader.databinding.ManualBarcodeViewHolderBinding
+import com.example.barcodereader.databinding.FragmentScanManualBarcodeViewHolderBinding
 import com.example.barcodereader.utils.AESEncryption
 import com.example.barcodereader.utils.CaptureAct
 import com.example.barcodereader.utils.CustomToast
@@ -140,7 +140,7 @@ class ScanFragment : Fragment() {
         binding.scanButtonManual.setOnClickListener {
 
             val manualBarcodeViewHolderBinding =
-                ManualBarcodeViewHolderBinding.inflate(layoutInflater)
+                FragmentScanManualBarcodeViewHolderBinding.inflate(layoutInflater)
 
             val builder =
                 AlertDialog.Builder(requireContext()).setView(manualBarcodeViewHolderBinding.root)

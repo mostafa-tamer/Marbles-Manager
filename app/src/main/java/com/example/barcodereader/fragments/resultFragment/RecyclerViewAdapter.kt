@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.barcodereader.databinding.ViewHolderBinding
+import com.example.barcodereader.databinding.FragmentResultRecyclerViewViewHolderBinding
 import com.example.barcodereader.network.properties.get.Table
 
 
@@ -20,7 +20,7 @@ class RecyclerViewAdapter :
         holder.bind(getItem(position))
     }
 
-    class ViewHolder(private val binding: ViewHolderBinding) :
+    class ViewHolder(private val binding: FragmentResultRecyclerViewViewHolderBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         lateinit var table: Table
@@ -34,7 +34,11 @@ class RecyclerViewAdapter :
         companion object {
             fun create(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ViewHolderBinding.inflate(layoutInflater, parent, false)
+                val binding = FragmentResultRecyclerViewViewHolderBinding.inflate(
+                    layoutInflater,
+                    parent,
+                    false
+                )
                 return ViewHolder(binding)
             }
         }

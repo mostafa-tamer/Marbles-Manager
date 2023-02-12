@@ -109,7 +109,7 @@
                             android:id="@+id/saved_users"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/rounded_login_button"
+                            android:background="@drawable/rounded_button"
                             android:drawableTint="@color/white"
                             android:text="Saved Users"
                             android:textSize="15dp" />
@@ -138,7 +138,7 @@
                             android:id="@+id/login_button"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/rounded_login_button"
+                            android:background="@drawable/rounded_button"
                             android:drawableLeft="@drawable/ic_baseline_login_24"
                             android:drawableTint="@color/white"
                             android:text="@string/login"

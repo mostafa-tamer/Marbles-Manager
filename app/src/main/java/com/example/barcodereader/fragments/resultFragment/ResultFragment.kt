@@ -83,13 +83,10 @@ class ResultFragment : Fragment() {
 
         binding.frz.text = language.frz + ": " + data.frz
         binding.blockNumber.text = language.blockNumber + ": " + data.blockNumber
-        binding.height.text = data.zdimension
-        binding.length.text = data.xdimension
-        binding.width.text = data.ydimension
         binding.price.text = language.price + ": " + data.price
-        binding.heightLabel.text = language.height
-        binding.lenghtLabel.text = language.length
-        binding.weighLabel.text = language.width
+        binding.height.text = language.height + ": " + data.zdimension
+        binding.length.text = language.length + ": " + data.xdimension
+        binding.width.text = language.width + ": " + data.ydimension
         binding.itemCode.text = language.itemCode + ": " + data.itemCode
 
         when (languageString) {
