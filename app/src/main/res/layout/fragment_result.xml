@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/red" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:background="@color/red" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/white" />
+    </LinearLayout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".fragments.resultFragment.ResultFragment">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="5dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+
+                <TextView
+                    android:id="@+id/item_name"
+                    style="@style/item_properties_fragment_result"
+
+                    android:hint="Item Name:" />
+
+
+                <TextView
+                    android:id="@+id/item_code"
+                    style="@style/item_properties_fragment_result"
+                    android:hint="Item Code:" />
+
+                <TextView
+                    android:id="@+id/block_number"
+                    style="@style/item_properties_fragment_result"
+                    android:hint="Block Number:" />
+
+
+                <TextView
+                    android:id="@+id/frz"
+                    style="@style/item_properties_fragment_result"
+                    android:hint="Frz:" />
+
+                <TextView
+                    android:id="@+id/price"
+                    style="@style/item_properties_fragment_result"
+                    android:hint="Price:" />
+
+                <TextView
+                    android:id="@+id/unit"
+                    style="@style/item_properties_fragment_result"
+                    android:layout_marginBottom="15dp"
+                    android:hint="Unit:" />
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp">
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/rounded_configuration_button">
+
+                        <TableRow>
+
+                            <TextView
+                                android:id="@+id/height_label"
+                                style="@style/table_card_view_fragment_result"
+                                android:text="Height"
+                                android:textColor="@color/white" />
+
+                            <TextView
+                                android:id="@+id/lenght_label"
+                                style="@style/table_card_view_fragment_result"
+                                android:text="Length" />
+
+                            <TextView
+                                android:id="@+id/weigh_label"
+                                style="@style/table_card_view_fragment_result"
+                                android:text="Width" />
+                        </TableRow>
+
+                        <TableRow>
+
+                            <TextView
+                                android:id="@+id/height"
+                                style="@style/table_card_view_fragment_result"
+                                android:text="Height" />
+
+                            <TextView
+                                android:id="@+id/length"
+                                style="@style/table_card_view_fragment_result"
+                                android:text="Length" />
+
+                            <TextView
+                                android:id="@+id/width"
+                                style="@style/table_card_view_fragment_result"
+                                android:text="Width" />
+                        </TableRow>
+                    </TableLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+
+                    android:layout_marginBottom="5dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="14dp">
+
+                    <TableLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+
+                    </TableLayout>
+
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            style="@style/card_view_fragment_result"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="10dp">
+
+            <LinearLayout style="@style/linear_layout_card_view_result_fragment">
+
+                <TextView
+                    android:id="@+id/brandName"
+                    style="@style/text_view_linear_layout_card_view_fragment_result"
+                    android:layout_weight="10"
+                    android:hint="brandName"
+                    android:text="Brand Name" />
+
+                <TextView
+                    android:id="@+id/amount"
+                    style="@style/text_view_linear_layout_card_view_fragment_result"
+                    android:layout_weight="6"
+                    android:hint="Amount"
+                    android:text="Amount" />
+
+                <TextView
+                    android:id="@+id/number"
+                    style="@style/text_view_linear_layout_card_view_fragment_result"
+                    android:layout_weight="6"
+                    android:hint="Number"
+                    android:text="Number" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="20dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</FrameLayout>
