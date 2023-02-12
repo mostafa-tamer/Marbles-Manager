@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/scanFragment"
-        android:name="com.example.barcodereader.fragments.scanFragment.ScanFragment"
+        android:name="com.example.barcodereader.fragments.scanFragment.MainMenuFragment"
         android:label="fragment_scan"
         tools:layout="@layout/fragment_scan">
         <action
@@ -45,6 +45,9 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/scanFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_scanFragment_to_inventoryFragment"
+            app:destination="@id/inventoryFragment" />
 
     </fragment>
 
@@ -56,10 +59,34 @@
 
         <argument
             android:name="data"
-            app:argType="com.example.barcodereader.network.properties.get.Data" />
+            app:argType="com.example.barcodereader.network.properties.get.marble.Data" />
 
         <argument
             android:name="language_string"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/inventoryFragment"
+        android:name="com.example.barcodereader.fragments.inventoryFragment.InventoryFragment"
+        android:label="fragment_inventory"
+        tools:layout="@layout/fragment_inventory" >
+        <action
+            android:id="@+id/action_inventoryFragment_to_scanInventoryFragment"
+            app:destination="@id/scanInventoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/scanInventoryFragment"
+        android:name="com.example.barcodereader.fragments.inventoryScanFragment.InventoryScanFragment"
+        android:label="fragment_scan_inventory"
+        tools:layout="@layout/fragment_inventory_scan" >
+        <argument
+            android:name="groupName"
+            app:argType="string" />
+        <argument
+            android:name="groupCode"
+            app:argType="string" />
+        <argument
+            android:name="languageString"
             app:argType="string" />
     </fragment>
 

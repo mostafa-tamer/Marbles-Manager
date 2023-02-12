@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.barcodereader.databinding.ActivityMainBinding
+import com.example.barcodereader.utils.errorOccurred
 
 
 class MainActivity : AppCompatActivity() {

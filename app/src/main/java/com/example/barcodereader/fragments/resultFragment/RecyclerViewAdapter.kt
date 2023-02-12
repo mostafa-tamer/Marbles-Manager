@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barcodereader.databinding.FragmentResultRecyclerViewViewHolderBinding
-import com.example.barcodereader.network.properties.get.Table
+import com.example.barcodereader.network.properties.get.marble.Table
 
 
 class RecyclerViewAdapter :

@@ -1,4 +1,4 @@
-package com.example.barcodereader.network.properties.get
+package com.example.barcodereader.network.properties.get.marble
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

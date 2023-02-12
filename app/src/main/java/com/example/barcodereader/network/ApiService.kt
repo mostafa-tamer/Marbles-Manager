@@ -1,6 +1,7 @@
 package com.example.barcodereader.network
 
-import com.example.barcodereader.network.properties.get.Statistics
+import com.example.barcodereader.network.properties.get.brances.Groups
+import com.example.barcodereader.network.properties.get.marble.Marble
 import com.example.barcodereader.network.properties.post.LoginRequest
 import com.example.barcodereader.network.properties.post.LoginResponse
 import retrofit2.Response
@@ -14,7 +15,12 @@ interface ApiService {
         @Query("barcode") barcode: String,
         @Query("loginCount") loginCount: Int,
         @Query("employeeNo") employeeNumber: String
-    ): Response<Statistics>
+    ): Response<Marble>
+
+    @GET("branch")
+    suspend fun getBranches(
+        @Query("schema") schema: String
+    ): Response<Groups>
 
     @POST("login")
     @Headers("Content-Type: application/json")

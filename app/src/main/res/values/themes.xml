@@ -16,4 +16,9 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="MyCustomTheme" parent="@style/Theme.MaterialComponents">
+        <item name="colorPrimary">@color/white</item>
+    </style>
+
 </resources>

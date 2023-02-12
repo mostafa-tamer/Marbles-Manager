@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.barcodereader.databinding.FragmentLoginBinding
 import com.example.barcodereader.databinding.FragmentLoginSavedUserButtonBinding
-import com.example.barcodereader.databinding.FragmentLoginSavedUsersViewHolderBinding
+import com.example.barcodereader.databinding.FragmentLoginSavedUsersContainerBinding
 import com.example.barcodereader.utils.CustomToast
 import com.udacity.asteroidradar.database.TopSoftwareDatabase
 
@@ -48,34 +48,40 @@ class LoginFragment : Fragment() {
                     it?.let {
                         if (it.isNotEmpty()) {
                             val fragmentLoginSavedUsersViewHolderBinding =
-                                FragmentLoginSavedUsersViewHolderBinding.inflate(layoutInflater)
+                                FragmentLoginSavedUsersContainerBinding.inflate(layoutInflater)
+
                             val alertDialog = AlertDialog.Builder(requireContext())
                                 .setTitle("Saved Users")
                                 .setView(fragmentLoginSavedUsersViewHolderBinding.root)
                                 .setPositiveButton("OK") { _, _ -> }
                                 .setNegativeButton("Clear") { _, _ ->
                                     viewModel.clearSavedUsersData()
-                                    CustomToast.show(requireContext(), "Done!")
+                                    CustomToast.show(requireContext(), "Cleared!")
                                 }.setOnDismissListener {
                                     firstTry = true
                                     isShowing = false
                                 }.show()
 
-                            for (i in it) {
+                            it.forEach { savedUser ->
+
                                 val fragmentLoginSavedUserButtonBinding =
                                     FragmentLoginSavedUserButtonBinding.inflate(layoutInflater)
+
+                                fragmentLoginSavedUserButtonBinding.usernameButton.text =
+                                    savedUser.userName
 
                                 fragmentLoginSavedUsersViewHolderBinding.container.addView(
                                     fragmentLoginSavedUserButtonBinding.root
                                 )
 
-                                fragmentLoginSavedUserButtonBinding.root.setOnClickListener {
-                                    binding.username.setText(i.userName)
-                                    binding.password.setText(i.password)
-                                    binding.token.setText(i.token)
+                                fragmentLoginSavedUserButtonBinding.usernameButton.setOnClickListener {
+                                    binding.username.setText(savedUser.userName)
+                                    binding.password.setText(savedUser.password)
+                                    binding.token.setText(savedUser.token)
                                     alertDialog.dismiss()
                                 }
                             }
+
                         } else if (it.isEmpty() && !firstTry) {
                             AlertDialog.Builder(requireContext())
                                 .setTitle("Saved Users")
@@ -150,7 +156,7 @@ class LoginFragment : Fragment() {
             it?.let {
                 if (!it) {
                     AlertDialog.Builder(requireContext())
-                        .setMessage("Please check your IP or the internet connection")
+                        .setMessage("Please check the token or the internet connection")
                         .setTitle("Login Failed")
                         .setPositiveButton("OK") { dialogInterface, _ ->
                             dialogInterface.dismiss()

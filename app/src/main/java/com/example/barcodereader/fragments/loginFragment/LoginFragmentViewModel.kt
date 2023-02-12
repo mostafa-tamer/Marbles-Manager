@@ -30,6 +30,7 @@ class LoginFragmentViewModel(
     val connectionStatus = Observable(true)
     val saveUserDatabaseStatus = MutableLiveData(true)
     val saveRememberedUsersDatabaseStatus = MutableLiveData(true)
+
     val response = Observable<Response<LoginResponse>>(null)
 
     private lateinit var username: String

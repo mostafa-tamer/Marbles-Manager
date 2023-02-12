@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.barcodereader.R
 import com.example.barcodereader.databinding.FragmentResultBinding
 import com.example.barcodereader.fragments.scanFragment.LanguageFactory
-import com.example.barcodereader.network.properties.get.BrandLanguages
-import com.example.barcodereader.network.properties.get.Data
-import com.example.barcodereader.network.properties.get.Table
+import com.example.barcodereader.network.properties.get.marble.BrandLanguages
+import com.example.barcodereader.network.properties.get.marble.Data
+import com.example.barcodereader.network.properties.get.marble.Table
 import com.udacity.asteroidradar.database.TopSoftwareDatabase
 
 
@@ -61,7 +61,8 @@ class ResultFragment : Fragment() {
     private fun testData() {
         for (i in 0..1000) {
             list += Table(
-                "25", BrandLanguages("", "", "", "", "", "", ""), "Factory Name", "50"
+                "25", BrandLanguages("", "", "", "", "", "", ""), "Factory Name", "50",
+                ""
             )
         }
         adapter.submitList(list)

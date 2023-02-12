@@ -72,7 +72,6 @@
                         android:drawableTint="@color/red"
                         android:inputType="textPassword"
                         android:text="" />
-                    <!--                    123-->
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -88,7 +87,6 @@
                         android:drawableTint="@color/red"
                         android:inputType="textPassword"
                         android:text="" />
-                    <!--                    jedzdbzdjbzjcbxfafcxjc-->
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.cardview.widget.CardView
