@@ -21,8 +21,8 @@ import com.udacity.asteroidradar.database.TopSoftwareDatabase
 
 class MainMenuFragment : Fragment() {
 
-    lateinit var binding: FragmentScanBinding
-    lateinit var viewModel: MainMenuViewModel
+    private lateinit var binding: FragmentScanBinding
+    private lateinit var viewModel: MainMenuViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -40,8 +40,12 @@ class MainMenuFragment : Fragment() {
         scanCameraBarcodeListener()
         scanManualBarcodeListener()
         logoutButtonListener()
+        inventoryButtonListener()
+    }
+
+    private fun inventoryButtonListener() {
         binding.inventory.setOnClickListener {
-            findNavController().navigate(MainMenuFragmentDirections.actionScanFragmentToInventoryFragment())
+            viewModel.getBranches()
         }
     }
 
@@ -50,6 +54,24 @@ class MainMenuFragment : Fragment() {
         logoutStatusObserver()
         connectionStatusObserver()
         retUserNameObserver()
+        groupsObserver()
+    }
+
+
+    private fun groupsObserver() {
+        viewModel.groups.work {
+            it?.let { response ->
+                if (response.code() == 200) {
+                    findNavController().navigate(
+                        MainMenuFragmentDirections.actionScanFragmentToInventoryFragment(
+                            response.body()!!.data.toTypedArray()
+                        )
+                    )
+                } else {
+                    CustomToast.show(requireContext(), "Failed to get Data")
+                }
+            }
+        }
     }
 
     private fun marbleObserver() {

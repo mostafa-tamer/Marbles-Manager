@@ -73,6 +73,9 @@
         <action
             android:id="@+id/action_inventoryFragment_to_scanInventoryFragment"
             app:destination="@id/scanInventoryFragment" />
+        <argument
+            android:name="group"
+            app:argType="com.example.barcodereader.network.properties.get.brances.Group[]" />
     </fragment>
     <fragment
         android:id="@+id/scanInventoryFragment"

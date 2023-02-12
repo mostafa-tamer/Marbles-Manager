@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.barcodereader.UserData
 import com.example.barcodereader.databinding.FragmentWelcomeBinding
 import com.udacity.asteroidradar.database.TopSoftwareDatabase
-import com.udacity.asteroidradar.database.User
 
 class WelcomeFragment : Fragment() {
 
@@ -38,9 +37,9 @@ class WelcomeFragment : Fragment() {
 
         welcomeFragmentViewModel.retUser()?.observe(viewLifecycleOwner) {
 
-            UserData.data = it[0]
-            println(UserData.data)
+
             if (it.isNotEmpty()) {
+                UserData.data = it[0]
                 findNavController().navigate(
                     WelcomeFragmentDirections.actionWelcomeFragmentToScanFragment()
                 )

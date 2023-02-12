@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.TextView
+import androidx.core.view.contains
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -33,8 +35,8 @@ class InventoryScanFragment : Fragment() {
         binding = FragmentInventoryScanBinding.inflate(layoutInflater)
         viewModelInitialization()
 
-        binding.groupName.text = args.groupName
-        binding.groupCode.text = args.groupCode
+        binding.groupName.text = "Group Name: ${args.groupName}"
+        binding.groupCode.text = "Group Number: ${args.groupCode}"
 
         listeners()
         observers()
@@ -56,8 +58,13 @@ class InventoryScanFragment : Fragment() {
         viewModel.marble.work { it ->
             it?.let {
                 if (it.code() == 200) {
+                    println(it.body())
+                    if (binding.container.contains(binding.dummyText)){
+                        binding.container.removeView(binding.dummyText)
+                    }
                     binding.container.addView(showData(it.body()!!.data, args.languageString))
-                    binding.textItemCount.text = binding.container.size.toString()
+                    binding.textItemCount.text =
+                        "Scanned Items: ${binding.container.size}"
                 } else {
                     AlertDialog.Builder(requireContext())
                         .setMessage(it.body()?.message).setPositiveButton(
@@ -155,7 +162,6 @@ class InventoryScanFragment : Fragment() {
 
     private fun scanManualBarcodeListener() {
         binding.scanButtonManual.setOnClickListener {
-
             val manualBarcodeViewHolderBinding =
                 FragmentScanManualBarcodeViewHolderBinding.inflate(layoutInflater)
 
