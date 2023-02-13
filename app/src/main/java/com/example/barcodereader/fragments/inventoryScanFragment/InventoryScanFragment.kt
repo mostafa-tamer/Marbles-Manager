@@ -5,28 +5,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.TextView
-import androidx.core.view.contains
-import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.barcodereader.databaes.InventoryItem
+import com.example.barcodereader.databaes.TopSoftwareDatabase
 import com.example.barcodereader.databinding.FragmentInventoryScanBinding
-import com.example.barcodereader.databinding.FragmentInventoryScanItemsViewHolderBinding
 import com.example.barcodereader.databinding.FragmentScanManualBarcodeViewHolderBinding
+import com.example.barcodereader.databinding.ItemPropertiesViewHolderBinding
 import com.example.barcodereader.fragments.scanFragment.LanguageFactory
 import com.example.barcodereader.network.properties.get.marble.Data
+import com.example.barcodereader.network.properties.get.marble.Table
+import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CaptureAct
 import com.example.barcodereader.utils.CustomToast
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
-import com.udacity.asteroidradar.database.TopSoftwareDatabase
 
 class InventoryScanFragment : Fragment() {
     private lateinit var binding: FragmentInventoryScanBinding
     private lateinit var viewModel: InventoryScanViewModel
     private lateinit var args: InventoryScanFragmentArgs
+
+    private val adapter = InventoryScanAdapter()
+    private val itemsList = mutableListOf<InventoryItem>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,12 +38,14 @@ class InventoryScanFragment : Fragment() {
         binding = FragmentInventoryScanBinding.inflate(layoutInflater)
         viewModelInitialization()
 
-        binding.groupName.text = "Group Name: ${args.groupName}"
-        binding.groupCode.text = "Group Number: ${args.groupCode}"
+        binding.container.adapter = adapter
+
+        adapter.submitList(itemsList)
+
+        binding.groupName.text = "${args.groupName}"
 
         listeners()
         observers()
-
         return binding.root
     }
 
@@ -54,17 +59,57 @@ class InventoryScanFragment : Fragment() {
         connectionStatusObserver()
     }
 
+    private fun updateListSize() {
+        if (itemsList.size > 0) binding.dummyText.text = ""
+        else binding.dummyText.text = "List Is Empty."
+        binding.textItemCount.text =
+            "Scanned Items: ${itemsList.size}"
+    }
+
     private fun marbleObserver() {
         viewModel.marble.work { it ->
             it?.let {
                 if (it.code() == 200) {
-                    println(it.body())
-                    if (binding.container.contains(binding.dummyText)){
-                        binding.container.removeView(binding.dummyText)
+                    val body = it.body()!!
+
+                    val table: Table? = body.data.table.find { args.groupCode == it.brandCode }
+                    if (table != null) {
+
+                        val data = body.data
+
+                        val inventoryItem = InventoryItem(
+                            data.itemCode,
+                            data.itemName,
+                            data.blockNumber,
+                            table.amount,
+                            table.number,
+                            data.frz,
+                            data.unit,
+                            data.zdimension,
+                            data.xdimension,
+                            data.ydimension
+                        )
+
+                        itemsList.add(
+                            inventoryItem
+                        )
+
+
+
+                        binding.container.layoutManager?.scrollToPosition(itemsList.size - 1)
+
+                        updateListSize()
+
+//                        showData(data, table)
+
+//                        itemPropertiesViewHolderBinding.removeButton.setOnClickListener {
+//                            binding.container.removeView(itemPropertiesViewHolderBinding)
+//                            updateListSize()
+//                            CustomToast.show(requireContext(), "Item Removed!")
+//                        }
+                    } else {
+                        CustomToast.show(requireContext(), "Item Not Found!")
                     }
-                    binding.container.addView(showData(it.body()!!.data, args.languageString))
-                    binding.textItemCount.text =
-                        "Scanned Items: ${binding.container.size}"
                 } else {
                     AlertDialog.Builder(requireContext())
                         .setMessage(it.body()?.message).setPositiveButton(
@@ -85,24 +130,35 @@ class InventoryScanFragment : Fragment() {
 
     private fun showData(
         data: Data,
-        languageString: String
-    ): FrameLayout {
+        table: Table
+    ): View {
 
         val languageFactory = LanguageFactory()
-        val language = languageFactory.getLanguage(languageString)
+        val language = languageFactory.getLanguage(userData.loginLanguage)
 
         val binding =
-            FragmentInventoryScanItemsViewHolderBinding.inflate(layoutInflater)
+            ItemPropertiesViewHolderBinding.inflate(layoutInflater)
 
-        binding.frz.text = language.frz + ": " + data.frz
-        binding.blockNumber.text = language.blockNumber + ": " + data.blockNumber
-        binding.price.text = language.price + ": " + data.price
-        binding.height.text = language.height + ": " + data.zdimension
-        binding.length.text = language.length + ": " + data.xdimension
-        binding.width.text = language.width + ": " + data.ydimension
-        binding.itemCode.text = language.itemCode + ": " + data.itemCode
 
-        when (languageString) {
+        val amount = table.amount
+        val number = table.number
+
+        binding.frz.text = "${language.frz}: "
+        binding.frzEdit.setText(data.frz)
+
+        binding.amount.text = "${language.amount}: "
+        binding.amountEdit.setText(amount)
+
+        binding.number.text = "${language.number}: "
+        binding.numberEdit.setText(number)
+
+        binding.blockNumber.text = "${language.blockNumber}: ${data.blockNumber}"
+        binding.height.text = "${language.height}: ${data.zdimension}"
+        binding.length.text = "${language.length}: ${data.xdimension}"
+        binding.width.text = "${language.width}: ${data.ydimension}"
+        binding.itemCode.text = "${language.itemCode}: ${data.itemCode}"
+
+        when (userData.loginLanguage) {
             "ar" -> {
                 binding.unit.text = language.unit + ": " + data.unit
                 binding.itemName.text = language.itemName + ": " + data.itemName

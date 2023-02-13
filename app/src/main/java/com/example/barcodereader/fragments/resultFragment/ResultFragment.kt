@@ -14,7 +14,7 @@ import com.example.barcodereader.fragments.scanFragment.LanguageFactory
 import com.example.barcodereader.network.properties.get.marble.BrandLanguages
 import com.example.barcodereader.network.properties.get.marble.Data
 import com.example.barcodereader.network.properties.get.marble.Table
-import com.udacity.asteroidradar.database.TopSoftwareDatabase
+import com.example.barcodereader.databaes.TopSoftwareDatabase
 
 
 class ResultFragment : Fragment() {

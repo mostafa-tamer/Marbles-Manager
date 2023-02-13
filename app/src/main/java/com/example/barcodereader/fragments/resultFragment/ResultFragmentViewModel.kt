@@ -3,7 +3,7 @@ package com.example.barcodereader.fragments.resultFragment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.udacity.asteroidradar.database.UserDao
+import com.example.barcodereader.databaes.UserDao
 
 class ResultFragmentViewModel(private val dataSource: UserDao) : ViewModel() {
 

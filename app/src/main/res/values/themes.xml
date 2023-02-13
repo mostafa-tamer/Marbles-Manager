@@ -19,6 +19,7 @@
 
     <style name="MyCustomTheme" parent="@style/Theme.MaterialComponents">
         <item name="colorPrimary">@color/white</item>
+        <item name="colorOnSecondary">@color/red</item>
     </style>
 
 </resources>

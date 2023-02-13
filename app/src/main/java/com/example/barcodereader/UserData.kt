@@ -1,7 +1,6 @@
 package com.example.barcodereader
 
-import com.udacity.asteroidradar.database.User
+import com.example.barcodereader.databaes.User
 
-object UserData {
-    lateinit var data: User
-}
+
+lateinit var userData: User

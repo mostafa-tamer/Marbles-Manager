@@ -6,11 +6,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.barcodereader.fragments.viewModels.ScanViewModel
 import com.example.barcodereader.network.Api
-import com.example.barcodereader.network.properties.get.brances.Groups
+import com.example.barcodereader.network.properties.get.groups.Groups
 import com.example.barcodereader.utils.AESEncryption
 import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
-import com.udacity.asteroidradar.database.UserDao
+import com.example.barcodereader.databaes.UserDao
 import kotlinx.coroutines.launch
 import retrofit2.Response
 

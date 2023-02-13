@@ -1,76 +1,261 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView
+    <data>
+
+        <variable
+            name="inventoryItem"
+            type="com.example.barcodereader.databaes.InventoryItem" />
+
+        <variable
+            name="language"
+            type="com.example.barcodereader.databaes.InventoryItem" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="5dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="20dp">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="6dp">
+
+            <LinearLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/item_name"
+                        style="@style/item_properties_fragment_result"
+                        android:hint="Item Name: " />
+
+                    <TextView
+                        android:id="@+id/item_name_text"
+                        style="@style/item_properties_fragment_result"
+                        android:hint="Item Name:"
+                        android:text="@{inventoryItem.itemName}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/item_code"
+                        style="@style/item_properties_fragment_result"
+                        android:hint="Item Code: " />
+
+                    <TextView
+                        android:id="@+id/item_code_text"
+                        style="@style/item_properties_fragment_result"
+                        android:text="@{inventoryItem.itemCode}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/block_number"
+                        style="@style/item_properties_fragment_result"
+                        android:hint="Block Number: " />
+
+                    <TextView
+                        android:id="@+id/block_number_text"
+                        style="@style/item_properties_fragment_result"
+
+                        android:text="@{inventoryItem.blockNumber}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/unit"
+                        style="@style/item_properties_fragment_result"
+                        android:hint="Unit: " />
+
+                    <TextView
+                        android:id="@+id/unite_text"
+                        style="@style/item_properties_fragment_result"
+
+                        android:text="@{inventoryItem.unit}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/height"
+                        style="@style/item_properties_fragment_result"
+                        android:text="Height: " />
+
+                    <TextView
+                        android:id="@+id/height_text"
+                        style="@style/item_properties_fragment_result"
+
+                        android:text="@{inventoryItem.height}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/length"
+                        style="@style/item_properties_fragment_result"
+                        android:text="Length: " />
+
+                    <TextView
+                        android:id="@+id/length_text"
+                        style="@style/item_properties_fragment_result"
+
+                        android:text="@{inventoryItem.length}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/width"
+                        style="@style/item_properties_fragment_result"
+                        android:text="Width: " />
+
+                    <TextView
+                        android:id="@+id/width_text"
+                        style="@style/item_properties_fragment_result"
+                        android:text="@{inventoryItem.width}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/amount"
+                        style="@style/item_properties_fragment_result"
+                        android:text="Amount:" />
+
+                    <EditText
+                        android:id="@+id/amount_edit"
+                        style="@style/item_properties_fragment_result"
+                        android:ems="3"
+                        android:padding="5dp"
+                        android:text="99999"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/number"
+                        style="@style/item_properties_fragment_result"
+                        android:text="Number:" />
+
+                    <EditText
+
+                        android:id="@+id/number_edit"
+                        style="@style/item_properties_fragment_result"
+                        android:ems="3"
+                        android:padding="5dp"
+                        android:text="99999"
+                        android:textAlignment="center" />
+
+                </LinearLayout>
+
+                <!--                <LinearLayout-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:orientation="horizontal">-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/frz"-->
+                <!--                        style="@style/item_properties_fragment_result"-->
+                <!--                        android:hint="Frz:" />-->
+
+                <!--                    <EditText-->
+                <!--                        android:id="@+id/frz_edit"-->
+                <!--                        style="@style/item_properties_fragment_result"-->
+                <!--                        android:ems="3"-->
+                <!--                        android:padding="5dp"-->
+                <!--                        android:text="99999"-->
+                <!--                        android:textAlignment="center" />-->
+                <!--                </LinearLayout>-->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/frz"
+                        style="@style/item_properties_fragment_result"
+                        android:hint="Frz:" />
+
+                    <EditText
+                        android:id="@+id/frz_edit"
+                        style="@style/item_properties_fragment_result"
+                        android:ems="3"
+                        android:padding="5dp"
+                        android:text="99999"
+                        android:textAlignment="center" />
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="4dp"
+                    app:cardCornerRadius="25dp"
+                    app:cardElevation="1dp">
+
+                    <com.balysv.materialripple.MaterialRippleLayout
+                        style="@style/ripple_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center">
+
+                        <Button
+                            android:id="@+id/removeButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/rounded_button"
+                            android:drawableTint="@color/white"
+                            android:text="Remove"
+                            android:textSize="15dp" />
+                    </com.balysv.materialripple.MaterialRippleLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
 
-            <TextView
-                android:id="@+id/item_name"
-                style="@style/item_properties_fragment_result"
-
-                android:hint="Item Name:" />
-
-
-            <TextView
-                android:id="@+id/item_code"
-                style="@style/item_properties_fragment_result"
-                android:hint="Item Code:" />
-
-            <TextView
-                android:id="@+id/block_number"
-                style="@style/item_properties_fragment_result"
-                android:hint="Block Number:" />
-
-
-            <TextView
-                android:id="@+id/frz"
-                style="@style/item_properties_fragment_result"
-                android:hint="Frz:" />
-
-            <TextView
-                android:id="@+id/price"
-                style="@style/item_properties_fragment_result"
-                android:hint="Price:" />
-
-            <TextView
-                android:id="@+id/unit"
-                style="@style/item_properties_fragment_result"
-
-                android:hint="Unit:" />
-
-            <TextView
-                android:id="@+id/height"
-                style="@style/item_properties_fragment_result"
-                android:text="Height" />
-
-            <TextView
-                android:id="@+id/length"
-                style="@style/item_properties_fragment_result"
-                android:text="Length" />
-
-            <TextView
-                android:id="@+id/width"
-                style="@style/item_properties_fragment_result"
-                android:text="Width" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</LinearLayout>
+    </LinearLayout>
+</layout>

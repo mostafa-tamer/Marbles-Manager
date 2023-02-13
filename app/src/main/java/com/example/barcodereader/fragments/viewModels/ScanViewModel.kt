@@ -3,12 +3,12 @@ package com.example.barcodereader.fragments.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.barcodereader.databaes.UserDao
 import com.example.barcodereader.network.Api
 import com.example.barcodereader.network.properties.get.marble.Marble
 import com.example.barcodereader.utils.AESEncryption
 import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
-import com.udacity.asteroidradar.database.UserDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,8 +40,8 @@ abstract class ScanViewModel(private val dataSource: UserDao) : ViewModel() {
 
                     withContext(Dispatchers.Main) {
                         marble.setValue(response)
+                        connectionStatus.setValue(true)
                     }
-                    connectionStatus.setValue(true)
                 }
 
             } catch (e: Exception) {

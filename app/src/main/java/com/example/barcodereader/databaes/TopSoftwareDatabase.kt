@@ -1,8 +1,9 @@
-package com.udacity.asteroidradar.database
+package com.example.barcodereader.databaes
 
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.barcodereader.network.properties.get.groups.Group
 
 
 @Entity
@@ -25,6 +26,22 @@ data class SavedUsers(
     val password: String,
     val token: String
 )
+
+@Entity
+data class InventoryItem(
+    @PrimaryKey
+    val itemCode: String,
+    val itemName: String,
+    val blockNumber: String,
+    val amount: String,
+    val number: String,
+    val frz: String,
+    val unit: String,
+    val height: String,
+    val length: String,
+    val width: String
+)
+
 
 @Dao
 interface SavedUsersDao {
@@ -59,7 +76,11 @@ interface UserDao {
     suspend fun logout()
 }
 
-@Database(entities = [User::class, SavedUsers::class], version = 1, exportSchema = false)
+@Database(
+    entities = [User::class, SavedUsers::class, InventoryItem::class, Group::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class TopSoftwareDatabase : RoomDatabase() {
 
     abstract val userDao: UserDao

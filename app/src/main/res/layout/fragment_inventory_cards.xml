@@ -28,7 +28,7 @@
                 android:drawableTint="@color/white"
                 android:paddingTop="12dp"
                 android:paddingBottom="12dp"
-                android:text="مصنع النادي الاهلي\n01155111"
+                android:text="مصنع النادي الاهلي"
                 android:textSize="20dp" />
         </com.balysv.materialripple.MaterialRippleLayout>
     </androidx.cardview.widget.CardView>

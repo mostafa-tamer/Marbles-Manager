@@ -11,6 +11,8 @@ abstract class Language(
     open val unit: String,
     open val itemCode: String,
     open val itemName: String,
+    open val amount: String,
+    open val number: String,
 )
 
 class English(
@@ -22,17 +24,11 @@ class English(
     override val price: String = "Price",
     override val unit: String = "Unit",
     override val itemCode: String = "ItemCode",
-    override val itemName: String = "ItemName"
+    override val itemName: String = "ItemName",
+    override val amount: String = "Amount",
+    override val number: String = "Number",
 ) : Language(
-    frz,
-    blockNumber,
-    height,
-    length,
-    width,
-    price,
-    unit,
-    itemCode,
-    itemName,
+    frz, blockNumber, height, length, width, price, unit, itemCode, itemName, amount, number
 )
 
 class Arabic(
@@ -44,15 +40,9 @@ class Arabic(
     override val price: String = "السعر",
     override val unit: String = "الوحدة",
     override val itemCode: String = "كودالصنف",
-    override val itemName: String = "اسم الصنف"
+    override val itemName: String = "اسم الصنف",
+    override val amount: String = "الكمية",
+    override val number: String = "العدد",
 ) : Language(
-    frz,
-    blockNumber,
-    height,
-    length,
-    width,
-    price,
-    unit,
-    itemCode,
-    itemName,
+    frz, blockNumber, height, length, width, price, unit, itemCode, itemName, amount, number
 )

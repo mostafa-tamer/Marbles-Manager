@@ -3,7 +3,7 @@ package com.example.barcodereader.fragments.inventoryScanFragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.barcodereader.fragments.viewModels.ScanViewModel
-import com.udacity.asteroidradar.database.UserDao
+import com.example.barcodereader.databaes.UserDao
 
 class InventoryScanViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
 

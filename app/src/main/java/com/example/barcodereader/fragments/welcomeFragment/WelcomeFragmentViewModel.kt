@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.udacity.asteroidradar.database.User
-import com.udacity.asteroidradar.database.UserDao
+import com.example.barcodereader.databaes.User
+import com.example.barcodereader.databaes.UserDao
 
 class WelcomeFragmentViewModel(private val dataSource: UserDao) : ViewModel() {
 

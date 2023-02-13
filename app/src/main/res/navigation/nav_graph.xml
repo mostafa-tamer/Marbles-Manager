@@ -75,7 +75,7 @@
             app:destination="@id/scanInventoryFragment" />
         <argument
             android:name="group"
-            app:argType="com.example.barcodereader.network.properties.get.brances.Group[]" />
+            app:argType="com.example.barcodereader.network.properties.get.groups.Group[]" />
     </fragment>
     <fragment
         android:id="@+id/scanInventoryFragment"
@@ -87,9 +87,6 @@
             app:argType="string" />
         <argument
             android:name="groupCode"
-            app:argType="string" />
-        <argument
-            android:name="languageString"
             app:argType="string" />
     </fragment>
 

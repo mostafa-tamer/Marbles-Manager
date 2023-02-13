@@ -8,9 +8,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.barcodereader.UserData
 import com.example.barcodereader.databinding.FragmentWelcomeBinding
-import com.udacity.asteroidradar.database.TopSoftwareDatabase
+import com.example.barcodereader.userData
+import com.example.barcodereader.databaes.TopSoftwareDatabase
 
 class WelcomeFragment : Fragment() {
 
@@ -37,9 +37,8 @@ class WelcomeFragment : Fragment() {
 
         welcomeFragmentViewModel.retUser()?.observe(viewLifecycleOwner) {
 
-
             if (it.isNotEmpty()) {
-                UserData.data = it[0]
+                 userData = it[0]
                 findNavController().navigate(
                     WelcomeFragmentDirections.actionWelcomeFragmentToScanFragment()
                 )

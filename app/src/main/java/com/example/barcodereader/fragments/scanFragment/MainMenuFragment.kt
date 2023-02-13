@@ -16,7 +16,7 @@ import com.example.barcodereader.utils.CustomToast
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
-import com.udacity.asteroidradar.database.TopSoftwareDatabase
+import com.example.barcodereader.databaes.TopSoftwareDatabase
 
 
 class MainMenuFragment : Fragment() {

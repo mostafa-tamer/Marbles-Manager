@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.barcodereader.UserData
 import com.example.barcodereader.databinding.FragmentInventoryBinding
 import com.example.barcodereader.databinding.FragmentInventoryCardsBinding
+import com.example.barcodereader.userData
 
 class InventoryFragment : Fragment() {
 
@@ -37,8 +37,7 @@ class InventoryFragment : Fragment() {
                 findNavController().navigate(
                     InventoryFragmentDirections.actionInventoryFragmentToScanInventoryFragment(
                         branch.groupName,
-                        branch.groupCode,
-                        UserData.data.loginLanguage
+                        branch.groupCode
                     )
                 )
             }

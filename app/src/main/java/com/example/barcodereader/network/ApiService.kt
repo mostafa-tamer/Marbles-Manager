@@ -1,6 +1,6 @@
 package com.example.barcodereader.network
 
-import com.example.barcodereader.network.properties.get.brances.Groups
+import com.example.barcodereader.network.properties.get.groups.Groups
 import com.example.barcodereader.network.properties.get.marble.Marble
 import com.example.barcodereader.network.properties.post.LoginRequest
 import com.example.barcodereader.network.properties.post.LoginResponse

@@ -7,14 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.example.barcodereader.network.Api
 import com.example.barcodereader.network.properties.post.LoginRequest
 import com.example.barcodereader.network.properties.post.LoginResponse
+import com.example.barcodereader.userData
 import com.example.barcodereader.utils.AESEncryption
 import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
 import com.example.barcodereader.utils.TokenDecrypt
-import com.udacity.asteroidradar.database.SavedUsers
-import com.udacity.asteroidradar.database.SavedUsersDao
-import com.udacity.asteroidradar.database.User
-import com.udacity.asteroidradar.database.UserDao
+import com.example.barcodereader.databaes.SavedUsers
+import com.example.barcodereader.databaes.SavedUsersDao
+import com.example.barcodereader.databaes.User
+import com.example.barcodereader.databaes.UserDao
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import retrofit2.Response
@@ -67,9 +68,11 @@ class LoginFragmentViewModel(
                     if (it.code() == 200) {
                         it.body()?.let { loginResponse ->
                             runBlocking {
-                                saveRememberedUsers(loginResponse.data.employeeNumber)
+                                saveRememberedUsersDatabaseStatus.value =
+                                    saveRememberedUsers(loginResponse.data.employeeNumber)
                             }
-                            saveUserResponse(loginResponse, loginRequest, subBaseURL)
+                            saveUserDatabaseStatus.value =
+                                saveUserResponse(loginResponse, loginRequest, subBaseURL)
                         }
                     }
                 }
@@ -80,8 +83,8 @@ class LoginFragmentViewModel(
         }
     }
 
-    private suspend fun saveRememberedUsers(employeeNumber: String) {
-        try {
+    private suspend fun saveRememberedUsers(employeeNumber: String): Boolean {
+        return try {
             savedUsersDao.insertUser(
                 SavedUsers(
                     employeeNumber,
@@ -90,11 +93,10 @@ class LoginFragmentViewModel(
                     token
                 )
             )
-
-            saveRememberedUsersDatabaseStatus.value = true
+            true
         } catch (e: Exception) {
             println(e.message)
-            saveRememberedUsersDatabaseStatus.value = false
+            false
         }
     }
 
@@ -102,22 +104,24 @@ class LoginFragmentViewModel(
         response: LoginResponse,
         loginRequest: LoginRequest,
         subBaseURL: String
-    ) {
-        try {
-            userDao.insertUser(
-                User(
-                    loginRequest.userName,
-                    loginRequest.password,
-                    loginRequest.schema,
-                    response.data.loginCount,
-                    response.data.loginLanguage,
-                    response.data.employeeNumber,
-                    subBaseURL
-                )
-            )
-            saveUserDatabaseStatus.value = true
+    ): Boolean {
+        val user = User(
+            loginRequest.userName,
+            loginRequest.password,
+            loginRequest.schema,
+            response.data.loginCount,
+            response.data.loginLanguage,
+            response.data.employeeNumber,
+            subBaseURL
+        )
+
+        userData = user
+
+        return try {
+            userDao.insertUser(user)
+            true
         } catch (e: Exception) {
-            saveUserDatabaseStatus.value = false
+            false
         }
     }
 
