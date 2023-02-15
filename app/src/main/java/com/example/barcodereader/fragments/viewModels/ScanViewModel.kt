@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.barcodereader.databaes.UserDao
 import com.example.barcodereader.network.Api
 import com.example.barcodereader.network.properties.get.marble.Marble
-import com.example.barcodereader.utils.AESEncryption
 import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
 import kotlinx.coroutines.Dispatchers

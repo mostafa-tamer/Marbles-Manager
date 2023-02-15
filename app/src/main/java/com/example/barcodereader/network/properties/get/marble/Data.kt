@@ -13,6 +13,7 @@ data class Data(
     val price: String,
     val table: List<Table>,
     val unit: String,
+    val unitCode: String,
     val unitLanguages: UnitLanguages,
     val xdimension: String,
     val ydimension: String,

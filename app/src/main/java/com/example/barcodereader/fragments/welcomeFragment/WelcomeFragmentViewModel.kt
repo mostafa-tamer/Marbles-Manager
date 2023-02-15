@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.barcodereader.databaes.User
 import com.example.barcodereader.databaes.UserDao
+import com.example.barcodereader.utils.GlobalKeys
 
 class WelcomeFragmentViewModel(private val dataSource: UserDao) : ViewModel() {
 
@@ -19,6 +20,10 @@ class WelcomeFragmentViewModel(private val dataSource: UserDao) : ViewModel() {
             status.value = false
             return null
         }
+    }
+
+    fun decrypt(value: String): String {
+        return AESEncryption.decrypt(value, GlobalKeys.KEY)
     }
 
     class WelcomeFragmentViewModelFactory(private val dataSource: UserDao) :

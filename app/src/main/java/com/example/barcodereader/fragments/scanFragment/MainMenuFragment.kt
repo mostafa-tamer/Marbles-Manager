@@ -43,12 +43,6 @@ class MainMenuFragment : Fragment() {
         inventoryButtonListener()
     }
 
-    private fun inventoryButtonListener() {
-        binding.inventory.setOnClickListener {
-            viewModel.getBranches()
-        }
-    }
-
     private fun observers() {
         barcodeObserver()
         logoutStatusObserver()
@@ -57,6 +51,11 @@ class MainMenuFragment : Fragment() {
         groupsObserver()
     }
 
+    private fun inventoryButtonListener() {
+        binding.inventory.setOnClickListener {
+            viewModel.getBranches()
+        }
+    }
 
     private fun groupsObserver() {
         viewModel.groups.work {
@@ -64,7 +63,7 @@ class MainMenuFragment : Fragment() {
                 if (response.code() == 200) {
                     findNavController().navigate(
                         MainMenuFragmentDirections.actionScanFragmentToInventoryFragment(
-                            response.body()!!.data.toTypedArray()
+                            response.body()!!.data
                         )
                     )
                 } else {

@@ -17,31 +17,33 @@ import com.example.barcodereader.network.properties.get.marble.Data
 import com.example.barcodereader.network.properties.get.marble.Table
 import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CaptureAct
+import com.example.barcodereader.utils.CustomList
 import com.example.barcodereader.utils.CustomToast
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class InventoryScanFragment : Fragment() {
     private lateinit var binding: FragmentInventoryScanBinding
     private lateinit var viewModel: InventoryScanViewModel
     private lateinit var args: InventoryScanFragmentArgs
 
-    private val adapter = InventoryScanAdapter()
-    private val itemsList = mutableListOf<InventoryItem>()
+    private val itemsList = CustomList<InventoryItem>()
+    private lateinit var adapter: InventoryScanAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         args = InventoryScanFragmentArgs.fromBundle(requireArguments())
         binding = FragmentInventoryScanBinding.inflate(layoutInflater)
         viewModelInitialization()
 
+        adapter = InventoryScanAdapter(itemsList)
+
         binding.container.adapter = adapter
-
-        adapter.submitList(itemsList)
-
         binding.groupName.text = "${args.groupName}"
 
         listeners()
@@ -52,18 +54,78 @@ class InventoryScanFragment : Fragment() {
     private fun listeners() {
         scanCameraBarcodeListener()
         scanManualBarcodeListener()
+        clearListListener()
+        saveButtonListener()
+    }
+
+    private fun saveButtonListener() {
+        binding.save.setOnClickListener {
+            if (itemsList.isNotEmpty()) {
+                viewModel.saveData(
+                    itemsList,
+                    userData.schema,
+                    args.pillCode,
+                    args.pillName,
+                    userData.employeeNumber,
+                    args.groupCode,
+                    args.groupMgr,
+                    getCurrentData()
+                )
+
+                itemsList.clear()
+                adapter.notifyDataSetChanged()
+            } else {
+                CustomToast.show(requireContext(), "List Is Empty!")
+            }
+        }
+    }
+
+    private fun clearListListener() {
+        binding.removeAll.setOnClickListener {
+            if (itemsList.isNotEmpty()) {
+                itemsList.clear()
+                adapter.notifyDataSetChanged()
+            } else {
+                CustomToast.show(requireContext(), "List Is Empty!")
+            }
+        }
     }
 
     private fun observers() {
         barcodeObserver()
         connectionStatusObserver()
+        saveDataResponseObserver()
+        listSizeObserver()
     }
 
-    private fun updateListSize() {
-        if (itemsList.size > 0) binding.dummyText.text = ""
-        else binding.dummyText.text = "List Is Empty."
-        binding.textItemCount.text =
-            "Scanned Items: ${itemsList.size}"
+    private fun saveDataResponseObserver() {
+        viewModel.saveDataResponse.work {
+
+            val dialog = AlertDialog.Builder(requireContext())
+                .setPositiveButton("OK") { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                }
+            if (it != null) {
+                dialog.setTitle("Info")
+                dialog.setMessage(it.body()!!.message)
+            }
+            else {
+                dialog.setTitle("Error")
+                dialog.setMessage("Please check the token or the internet connection")
+            }
+
+            dialog.show()
+        }
+    }
+
+    private fun listSizeObserver() {
+        itemsList.sizeLiveData.observe(viewLifecycleOwner) {
+            it?.let {
+                if (it > 0) binding.dummyText.text = ""
+                else binding.dummyText.text = "List Is Empty."
+                binding.textItemCount.text = "Scanned Items: ${it}"
+            }
+        }
     }
 
     private fun marbleObserver() {
@@ -71,10 +133,9 @@ class InventoryScanFragment : Fragment() {
             it?.let {
                 if (it.code() == 200) {
                     val body = it.body()!!
-
                     val table: Table? = body.data.table.find { args.groupCode == it.brandCode }
-                    if (table != null) {
 
+                    if (table != null) {
                         val data = body.data
 
                         val inventoryItem = InventoryItem(
@@ -85,34 +146,25 @@ class InventoryScanFragment : Fragment() {
                             table.number,
                             data.frz,
                             data.unit,
+                            data.unitCode,
                             data.zdimension,
                             data.xdimension,
-                            data.ydimension
+                            data.ydimension,
+                            args.groupCode
                         )
 
-                        itemsList.add(
-                            inventoryItem
-                        )
-
-
+                        for (i in 1..100)
+                            itemsList.add(
+                                inventoryItem
+                            )
 
                         binding.container.layoutManager?.scrollToPosition(itemsList.size - 1)
-
-                        updateListSize()
-
-//                        showData(data, table)
-
-//                        itemPropertiesViewHolderBinding.removeButton.setOnClickListener {
-//                            binding.container.removeView(itemPropertiesViewHolderBinding)
-//                            updateListSize()
-//                            CustomToast.show(requireContext(), "Item Removed!")
-//                        }
                     } else {
                         CustomToast.show(requireContext(), "Item Not Found!")
                     }
                 } else {
-                    AlertDialog.Builder(requireContext())
-                        .setMessage(it.body()?.message).setPositiveButton(
+                    AlertDialog.Builder(requireContext()).setMessage(it.body()?.message)
+                        .setPositiveButton(
                             "OK"
                         ) { dialogInterface, _ ->
                             dialogInterface.dismiss()
@@ -122,6 +174,12 @@ class InventoryScanFragment : Fragment() {
         }
     }
 
+    private fun getCurrentData(): String {
+        val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val calendar = Calendar.getInstance()
+        return dateTimeFormat.format(calendar.time)
+    }
+
     private fun viewModelInitialization() {
         val userDao = TopSoftwareDatabase.getInstance(requireContext()).userDao
         val viewModelFactory = InventoryScanViewModel.InventoryScanViewModelFactory(userDao)
@@ -129,15 +187,13 @@ class InventoryScanFragment : Fragment() {
     }
 
     private fun showData(
-        data: Data,
-        table: Table
+        data: Data, table: Table
     ): View {
 
         val languageFactory = LanguageFactory()
         val language = languageFactory.getLanguage(userData.loginLanguage)
 
-        val binding =
-            ItemPropertiesViewHolderBinding.inflate(layoutInflater)
+        val binding = ItemPropertiesViewHolderBinding.inflate(layoutInflater)
 
 
         val amount = table.amount
@@ -152,11 +208,11 @@ class InventoryScanFragment : Fragment() {
         binding.number.text = "${language.number}: "
         binding.numberEdit.setText(number)
 
-        binding.blockNumber.text = "${language.blockNumber}: ${data.blockNumber}"
-        binding.height.text = "${language.height}: ${data.zdimension}"
-        binding.length.text = "${language.length}: ${data.xdimension}"
-        binding.width.text = "${language.width}: ${data.ydimension}"
-        binding.itemCode.text = "${language.itemCode}: ${data.itemCode}"
+        binding.blockNumber.text = "${language.blockNumber}: "
+        binding.height.text = "${language.height}: "
+        binding.length.text = "${language.length}: "
+        binding.width.text = "${language.width}: "
+        binding.itemCode.text = "${language.itemCode}: "
 
         when (userData.loginLanguage) {
             "ar" -> {
@@ -242,11 +298,8 @@ class InventoryScanFragment : Fragment() {
 
     private fun scanCameraBarcodeListener() {
         binding.scanButtonCamera.setOnClickListener {
-            val scanOptions = ScanOptions()
-                .setPrompt("Volume up to flash on")
-                .setBeepEnabled(true)
-                .setOrientationLocked(true)
-                .setCaptureActivity(CaptureAct::class.java)
+            val scanOptions = ScanOptions().setPrompt("Volume up to flash on").setBeepEnabled(true)
+                .setOrientationLocked(true).setCaptureActivity(CaptureAct::class.java)
             barLauncher.launch(scanOptions)
         }
     }
@@ -285,8 +338,7 @@ class InventoryScanFragment : Fragment() {
                 if (!it) {
                     AlertDialog.Builder(requireContext())
                         .setMessage("Please check the token or the internet connection")
-                        .setTitle("Error")
-                        .setPositiveButton("OK") { dialogInterface, _ ->
+                        .setTitle("Error").setPositiveButton("OK") { dialogInterface, _ ->
                             dialogInterface.dismiss()
                         }.show()
                 }

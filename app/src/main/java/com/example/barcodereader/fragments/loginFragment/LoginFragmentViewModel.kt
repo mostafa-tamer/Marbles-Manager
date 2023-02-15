@@ -5,10 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.barcodereader.network.Api
-import com.example.barcodereader.network.properties.post.LoginRequest
-import com.example.barcodereader.network.properties.post.LoginResponse
+import com.example.barcodereader.network.properties.post.login.LoginRequest
+import com.example.barcodereader.network.properties.post.login.LoginResponse
 import com.example.barcodereader.userData
-import com.example.barcodereader.utils.AESEncryption
 import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
 import com.example.barcodereader.utils.TokenDecrypt

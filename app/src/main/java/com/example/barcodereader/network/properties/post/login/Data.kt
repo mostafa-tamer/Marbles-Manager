@@ -1,4 +1,4 @@
-package com.example.barcodereader.network.properties.post
+package com.example.barcodereader.network.properties.post.login
 
 
 data class Data(

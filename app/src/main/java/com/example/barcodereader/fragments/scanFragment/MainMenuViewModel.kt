@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.barcodereader.fragments.viewModels.ScanViewModel
 import com.example.barcodereader.network.Api
-import com.example.barcodereader.network.properties.get.groups.Groups
-import com.example.barcodereader.utils.AESEncryption
 import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
 import com.example.barcodereader.databaes.UserDao
+import com.example.barcodereader.network.properties.get.groups.Groups
 import kotlinx.coroutines.launch
+import okhttp3.internal.notify
 import retrofit2.Response
 
 class MainMenuViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
@@ -38,9 +38,7 @@ class MainMenuViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
         viewModelScope.launch {
             try {
                 val user = userDao.retUserSuspend()
-
                 val api = Api(user[0].subBaseURL)
-
                 groups.setValue(api.call.getBranches(user[0].schema))
                 connectionStatus.setValue(true)
             } catch (e: Exception) {

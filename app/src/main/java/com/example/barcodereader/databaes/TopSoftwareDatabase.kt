@@ -3,14 +3,13 @@ package com.example.barcodereader.databaes
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.barcodereader.network.properties.get.groups.Group
 
 
 @Entity
 data class User(
     val userName: String,
     val password: String,
-    val schema: String,
+    var schema: String,
     val loginCount: Int,
     val loginLanguage: String,
     @PrimaryKey
@@ -33,15 +32,16 @@ data class InventoryItem(
     val itemCode: String,
     val itemName: String,
     val blockNumber: String,
-    val amount: String,
-    val number: String,
-    val frz: String,
+    var amount: String,
+    var number: String,
+    var frz: String,
     val unit: String,
+    val unitCode: String,
     val height: String,
     val length: String,
-    val width: String
+    val width: String,
+    val groupCode: String
 )
-
 
 @Dao
 interface SavedUsersDao {
@@ -77,7 +77,7 @@ interface UserDao {
 }
 
 @Database(
-    entities = [User::class, SavedUsers::class, InventoryItem::class, Group::class],
+    entities = [User::class, SavedUsers::class, InventoryItem::class],
     version = 1,
     exportSchema = false
 )

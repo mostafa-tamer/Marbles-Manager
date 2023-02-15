@@ -1,4 +1,4 @@
-package com.example.barcodereader.fragments.inventoryFragment
+package com.example.barcodereader.fragments.invoiceFragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,45 +6,43 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.barcodereader.databinding.FragmentInventoryBinding
 import com.example.barcodereader.databinding.FragmentInventoryCardsBinding
-import com.example.barcodereader.userData
+import com.example.barcodereader.databinding.FragmentInvoiceBinding
 
-class InventoryFragment : Fragment() {
+class InvoiceFragment : Fragment() {
 
-    lateinit var binding: FragmentInventoryBinding
-    lateinit var args: InventoryFragmentArgs
+    lateinit var binding: FragmentInvoiceBinding
+    lateinit var args: InvoiceFragmentArgs
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
-        binding = FragmentInventoryBinding.inflate(layoutInflater)
-
-        args = InventoryFragmentArgs.fromBundle(requireArguments())
-
+        binding = FragmentInvoiceBinding.inflate(layoutInflater)
+        args = InvoiceFragmentArgs.fromBundle(requireArguments())
         showData()
-
         return binding.root
     }
 
     private fun showData() {
-        args.group.forEach { branch ->
+        args.group.pillTypeList.forEach { pill ->
             val fragmentInventoryCardBinding =
                 FragmentInventoryCardsBinding.inflate(layoutInflater)
             fragmentInventoryCardBinding.factoryButton.text =
-                "${branch.groupName}"
+                "${pill.nameAr}"
 
             fragmentInventoryCardBinding.factoryButton.setOnClickListener {
                 findNavController().navigate(
-                    InventoryFragmentDirections.actionInventoryFragmentToScanInventoryFragment(
-                        branch.groupName,
-                        branch.groupCode
+                    InvoiceFragmentDirections.actionInvoiceFragmentToScanInventoryFragment(
+                        args.groupName,
+                        args.groupCode,
+                        args.groupMgr,
+                        pill.nameAr,
+                        pill.code
                     )
                 )
             }
-
             binding.container.addView(fragmentInventoryCardBinding.root)
         }
     }
-
 
 }

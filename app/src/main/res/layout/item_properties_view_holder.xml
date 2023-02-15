@@ -10,7 +10,7 @@
 
         <variable
             name="language"
-            type="com.example.barcodereader.databaes.InventoryItem" />
+            type="com.example.barcodereader.Language" />
     </data>
 
     <LinearLayout
@@ -44,12 +44,15 @@
                     <TextView
                         android:id="@+id/item_name"
                         style="@style/item_properties_fragment_result"
-                        android:hint="Item Name: " />
+                        android:text="@{language.itemName}" />
+
+                    <TextView
+                        style="@style/item_properties_fragment_result"
+                        android:text=": " />
 
                     <TextView
                         android:id="@+id/item_name_text"
                         style="@style/item_properties_fragment_result"
-                        android:hint="Item Name:"
                         android:text="@{inventoryItem.itemName}" />
                 </LinearLayout>
 
@@ -61,7 +64,12 @@
                     <TextView
                         android:id="@+id/item_code"
                         style="@style/item_properties_fragment_result"
-                        android:hint="Item Code: " />
+
+                        android:text="@{language.itemCode}" />
+
+                    <TextView
+                        style="@style/item_properties_fragment_result"
+                        android:text=": " />
 
                     <TextView
                         android:id="@+id/item_code_text"
@@ -77,7 +85,12 @@
                     <TextView
                         android:id="@+id/block_number"
                         style="@style/item_properties_fragment_result"
-                        android:hint="Block Number: " />
+
+                        android:text="@{language.blockNumber}" />
+
+                    <TextView
+                        style="@style/item_properties_fragment_result"
+                        android:text=": " />
 
                     <TextView
                         android:id="@+id/block_number_text"
@@ -92,26 +105,14 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/unit"
-                        style="@style/item_properties_fragment_result"
-                        android:hint="Unit: " />
-
-                    <TextView
-                        android:id="@+id/unite_text"
-                        style="@style/item_properties_fragment_result"
-
-                        android:text="@{inventoryItem.unit}" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
                         android:id="@+id/height"
                         style="@style/item_properties_fragment_result"
-                        android:text="Height: " />
+
+                        android:text="@{language.height}" />
+
+                    <TextView
+                        style="@style/item_properties_fragment_result"
+                        android:text=": " />
 
                     <TextView
                         android:id="@+id/height_text"
@@ -126,9 +127,35 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/unit"
+                        style="@style/item_properties_fragment_result"
+
+                        android:text="@{language.unit}" />
+
+                    <TextView
+                        style="@style/item_properties_fragment_result"
+                        android:text=": " />
+
+                    <TextView
+                        android:id="@+id/unite_text"
+                        style="@style/item_properties_fragment_result"
+                        android:text="@{inventoryItem.unit}" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
                         android:id="@+id/length"
                         style="@style/item_properties_fragment_result"
-                        android:text="Length: " />
+
+                        android:text="@{language.length}" />
+
+                    <TextView
+                        style="@style/item_properties_fragment_result"
+                        android:text=": " />
 
                     <TextView
                         android:id="@+id/length_text"
@@ -145,7 +172,12 @@
                     <TextView
                         android:id="@+id/width"
                         style="@style/item_properties_fragment_result"
-                        android:text="Width: " />
+
+                        android:text="@{language.width}" />
+
+                    <TextView
+                        style="@style/item_properties_fragment_result"
+                        android:text=": " />
 
                     <TextView
                         android:id="@+id/width_text"
@@ -155,20 +187,76 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/frz"
+                        style="@style/item_properties_fragment_result"
+
+                        android:text="@{language.frz}" />
+
+                    <TextView
+                        style="@style/item_properties_fragment_result"
+                        android:text=": " />
+
+                    <TextView
+                        android:id="@+id/frz_edit"
+                        style="@style/item_properties_fragment_result"
+                        android:text="@{inventoryItem.frz}"  />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/amount"
                         style="@style/item_properties_fragment_result"
-                        android:text="Amount:" />
+                        android:text="@{language.amount}" />
+
+                    <TextView
+                        style="@style/item_properties_fragment_result"
+                        android:text=": " />
 
                     <EditText
                         android:id="@+id/amount_edit"
                         style="@style/item_properties_fragment_result"
-                        android:ems="3"
+                        android:ems="6"
                         android:padding="5dp"
-                        android:text="99999"
+                        android:inputType="numberDecimal"
+                        android:text="@{inventoryItem.amount}"
                         android:textAlignment="center" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <androidx.cardview.widget.CardView
+                        style="@style/save_button_card_view_item_property"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="2dp">
+
+                        <com.balysv.materialripple.MaterialRippleLayout
+                            style="@style/ripple_style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/amount_save"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/rounded_button"
+                                android:enabled="false"
+                                android:text="Save"
+                                android:textColor="@color/red"
+                                android:textSize="10dp" />
+                        </com.balysv.materialripple.MaterialRippleLayout>
+                    </androidx.cardview.widget.CardView>
+
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -178,62 +266,61 @@
                     <TextView
                         android:id="@+id/number"
                         style="@style/item_properties_fragment_result"
-                        android:text="Number:" />
+
+                        android:text="@{language.number}" />
+
+                    <TextView
+                        style="@style/item_properties_fragment_result"
+                        android:text=": " />
 
                     <EditText
 
                         android:id="@+id/number_edit"
                         style="@style/item_properties_fragment_result"
-                        android:ems="3"
+                        android:ems="6"
                         android:padding="5dp"
-                        android:text="99999"
+                        android:inputType="numberDecimal"
+                        android:text="@{inventoryItem.number}"
                         android:textAlignment="center" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1" />
+
+                    <androidx.cardview.widget.CardView
+                        style="@style/save_button_card_view_item_property"
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="2dp">
+
+                        <com.balysv.materialripple.MaterialRippleLayout
+                            style="@style/ripple_style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <androidx.appcompat.widget.AppCompatButton
+                                android:id="@+id/number_save"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/rounded_button"
+                                android:enabled="false"
+                                android:text="Save"
+                                android:textColor="@color/red"
+                                android:textSize="10dp"
+                                android:theme="@style/ColorPrimaryWhite" />
+                        </com.balysv.materialripple.MaterialRippleLayout>
+                    </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
 
-                <!--                <LinearLayout-->
-                <!--                    android:layout_width="match_parent"-->
-                <!--                    android:layout_height="wrap_content"-->
-                <!--                    android:orientation="horizontal">-->
 
-                <!--                    <TextView-->
-                <!--                        android:id="@+id/frz"-->
-                <!--                        style="@style/item_properties_fragment_result"-->
-                <!--                        android:hint="Frz:" />-->
-
-                <!--                    <EditText-->
-                <!--                        android:id="@+id/frz_edit"-->
-                <!--                        style="@style/item_properties_fragment_result"-->
-                <!--                        android:ems="3"-->
-                <!--                        android:padding="5dp"-->
-                <!--                        android:text="99999"-->
-                <!--                        android:textAlignment="center" />-->
-                <!--                </LinearLayout>-->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/frz"
-                        style="@style/item_properties_fragment_result"
-                        android:hint="Frz:" />
-
-                    <EditText
-                        android:id="@+id/frz_edit"
-                        style="@style/item_properties_fragment_result"
-                        android:ems="3"
-                        android:padding="5dp"
-                        android:text="99999"
-                        android:textAlignment="center" />
-                </LinearLayout>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="10dp"
                     app:cardCornerRadius="25dp"
                     app:cardElevation="1dp">
 

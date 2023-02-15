@@ -2,8 +2,10 @@ package com.example.barcodereader.network
 
 import com.example.barcodereader.network.properties.get.groups.Groups
 import com.example.barcodereader.network.properties.get.marble.Marble
-import com.example.barcodereader.network.properties.post.LoginRequest
-import com.example.barcodereader.network.properties.post.LoginResponse
+import com.example.barcodereader.network.properties.post.login.LoginRequest
+import com.example.barcodereader.network.properties.post.login.LoginResponse
+import com.example.barcodereader.network.properties.post.saveData.SaveDataRequest
+import com.example.barcodereader.network.properties.post.saveData.SaveDataResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -25,6 +27,10 @@ interface ApiService {
     @POST("login")
     @Headers("Content-Type: application/json")
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
+
+    @POST("save")
+    @Headers("Content-Type: application/json")
+    suspend fun saveData(@Body loginRequest: SaveDataRequest): Response<SaveDataResponse>
 }
 
 

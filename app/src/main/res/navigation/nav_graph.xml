@@ -67,27 +67,58 @@
     </fragment>
     <fragment
         android:id="@+id/inventoryFragment"
-        android:name="com.example.barcodereader.fragments.inventoryFragment.InventoryFragment"
+        android:name="com.example.barcodereader.fragments.inventoryFragment.GroupFragment"
         android:label="fragment_inventory"
-        tools:layout="@layout/fragment_inventory" >
+        tools:layout="@layout/fragment_group">
         <action
-            android:id="@+id/action_inventoryFragment_to_scanInventoryFragment"
-            app:destination="@id/scanInventoryFragment" />
+            android:id="@+id/action_inventoryFragment_to_invoiceFragment"
+            app:destination="@id/invoiceFragment" />
+
         <argument
             android:name="group"
-            app:argType="com.example.barcodereader.network.properties.get.groups.Group[]" />
+            app:argType="com.example.barcodereader.network.properties.get.groups.Group" />
     </fragment>
     <fragment
         android:id="@+id/scanInventoryFragment"
         android:name="com.example.barcodereader.fragments.inventoryScanFragment.InventoryScanFragment"
         android:label="fragment_scan_inventory"
-        tools:layout="@layout/fragment_inventory_scan" >
+        tools:layout="@layout/fragment_inventory_scan">
         <argument
             android:name="groupName"
             app:argType="string" />
         <argument
             android:name="groupCode"
             app:argType="string" />
+        <argument
+            android:name="groupMgr"
+            app:argType="string" />
+        <argument
+            android:name="pillName"
+            app:argType="string" />
+        <argument
+            android:name="pillCode"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/invoiceFragment"
+        android:name="com.example.barcodereader.fragments.invoiceFragment.InvoiceFragment"
+        android:label="fragment_invoice"
+        tools:layout="@layout/fragment_invoice">
+        <argument
+            android:name="groupName"
+            app:argType="string" />
+        <argument
+            android:name="groupCode"
+            app:argType="string" />
+        <argument
+            android:name="groupMgr"
+            app:argType="string" />
+        <argument
+            android:name="group"
+            app:argType="com.example.barcodereader.network.properties.get.groups.Group" />
+        <action
+            android:id="@+id/action_invoiceFragment_to_scanInventoryFragment"
+            app:destination="@id/scanInventoryFragment" />
     </fragment>
 
 </navigation>
