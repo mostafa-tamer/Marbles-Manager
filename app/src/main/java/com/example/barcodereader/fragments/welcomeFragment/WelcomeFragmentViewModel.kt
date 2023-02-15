@@ -12,7 +12,7 @@ class WelcomeFragmentViewModel(private val dataSource: UserDao) : ViewModel() {
 
     val status = MutableLiveData(true)
 
-    fun retUser(): LiveData<List<User>>? {
+    fun retUser(): LiveData< User> ? {
         return try {
             status.value = true
             dataSource.retUser()
@@ -20,10 +20,6 @@ class WelcomeFragmentViewModel(private val dataSource: UserDao) : ViewModel() {
             status.value = false
             return null
         }
-    }
-
-    fun decrypt(value: String): String {
-        return AESEncryption.decrypt(value, GlobalKeys.KEY)
     }
 
     class WelcomeFragmentViewModelFactory(private val dataSource: UserDao) :

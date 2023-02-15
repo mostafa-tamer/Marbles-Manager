@@ -38,8 +38,8 @@ class MainMenuViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
         viewModelScope.launch {
             try {
                 val user = userDao.retUserSuspend()
-                val api = Api(user[0].subBaseURL)
-                groups.setValue(api.call.getBranches(user[0].schema))
+                val api = Api(user.subBaseURL)
+                groups.setValue(api.call.getBranches(user.schema))
                 connectionStatus.setValue(true)
             } catch (e: Exception) {
                 connectionStatus.setValue(false)

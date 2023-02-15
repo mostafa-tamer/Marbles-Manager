@@ -1,9 +1,11 @@
 package com.example.barcodereader.fragments.inventoryScanFragment
 
+import AESEncryption
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.barcodereader.databaes.InventoryItem
+import com.example.barcodereader.databaes.InventoryItemDao
 import com.example.barcodereader.databaes.UserDao
 import com.example.barcodereader.fragments.viewModels.ScanViewModel
 import com.example.barcodereader.network.Api
@@ -12,15 +14,36 @@ import com.example.barcodereader.network.properties.post.saveData.SaveDataRespon
 import com.example.barcodereader.network.properties.post.saveData.SavedItems
 import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CustomList
+import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-class InventoryScanViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
+class InventoryScanViewModel(
+    private val userDao: UserDao,
+    private val inventoryItemDao: InventoryItemDao
+) : ScanViewModel(userDao) {
 
     val saveDataResponse = Observable<Response<SaveDataResponse>>()
 
-    fun saveData(
+    fun saveDataDB(inventoryItems: List<InventoryItem>) {
+        viewModelScope.launch {
+            inventoryItemDao.insertItems(inventoryItems)
+        }
+    }
+
+    fun deleteDataDB(groupCode: String, pillCode: String) {
+        viewModelScope.launch {
+            inventoryItemDao.deleteItemsData(groupCode, pillCode, userData.employeeNumber)
+        }
+    }
+
+    fun retData(groupCode: String, pillCode: String) =
+        inventoryItemDao.retItems(groupCode, pillCode, userData.employeeNumber)
+
+    fun getTableCount() = inventoryItemDao.getTableCount()
+
+    fun sendData(
         itemsList: CustomList<InventoryItem>,
         schema: String,
         pillCode: String,
@@ -59,7 +82,7 @@ class InventoryScanViewModel(private val userDao: UserDao) : ScanViewModel(userD
                     pillName,
                     pillCode,
                     convertedList,
-                    schema
+                    AESEncryption.decrypt(schema, GlobalKeys.KEY)
                 )
 
                 saveDataResponse.setValue(
@@ -67,7 +90,6 @@ class InventoryScanViewModel(private val userDao: UserDao) : ScanViewModel(userD
                         saveDataRequest
                     )
                 )
-
 
             } catch (e: Exception) {
                 saveDataResponse.setValue(null)
@@ -80,13 +102,14 @@ class InventoryScanViewModel(private val userDao: UserDao) : ScanViewModel(userD
 
 
     class InventoryScanViewModelFactory(
-        private val userDao: UserDao
+        private val userDao: UserDao,
+        private val inventoryItemDao: InventoryItemDao
     ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(InventoryScanViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return InventoryScanViewModel(userDao) as T
+                return InventoryScanViewModel(userDao, inventoryItemDao) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

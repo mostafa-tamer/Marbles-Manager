@@ -28,7 +28,6 @@ data class SavedUsers(
 
 @Entity
 data class InventoryItem(
-    @PrimaryKey
     val itemCode: String,
     val itemName: String,
     val blockNumber: String,
@@ -40,8 +39,39 @@ data class InventoryItem(
     val height: String,
     val length: String,
     val width: String,
-    val groupCode: String
+    val groupCode: String,
+    val pillCode: String,
+    val employeeNumber: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0
 )
+
+@Dao
+interface InventoryItemDao {
+    @Insert
+    suspend fun insertItems(inventoryItem: List<InventoryItem>)
+
+    @Query("select * from InventoryItem where groupCode = :groupCode and pillCode = :pillCode and employeeNumber = :employeeNumber")
+    fun retItems(
+        groupCode: String,
+        pillCode: String,
+        employeeNumber: String
+    ): LiveData<List<InventoryItem>>
+
+    @Query("select * from InventoryItem where groupCode = :groupCode and pillCode = :pillCode  and employeeNumber = :employeeNumber")
+    suspend fun retItemsSuspend(
+        groupCode: String,
+        pillCode: String,
+        employeeNumber: String
+    ): List<InventoryItem>
+
+    @Query("delete from InventoryItem where groupCode = :groupCode and pillCode = :pillCode and employeeNumber = :employeeNumber")
+    suspend fun deleteItemsData(groupCode: String, pillCode: String, employeeNumber: String)
+
+    @Query("select * from InventoryItem")
+    fun getTableCount(): LiveData<List<InventoryItem>>
+}
+
 
 @Dao
 interface SavedUsersDao {
@@ -67,10 +97,10 @@ interface UserDao {
     suspend fun insertUser(user: User)
 
     @Query("select * from User")
-    fun retUser(): LiveData<List<User>>
+    fun retUser(): LiveData<User>
 
     @Query("select * from User")
-    suspend fun retUserSuspend(): List<User>
+    suspend fun retUserSuspend(): User
 
     @Query("delete from User")
     suspend fun logout()
@@ -85,6 +115,7 @@ abstract class TopSoftwareDatabase : RoomDatabase() {
 
     abstract val userDao: UserDao
     abstract val savedUsersDao: SavedUsersDao
+    abstract val inventoryItemDao: InventoryItemDao
 
     companion object {
 

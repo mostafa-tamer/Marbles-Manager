@@ -31,7 +31,7 @@ abstract class ScanViewModel(private val dataSource: UserDao) : ViewModel() {
 
                 withContext(Dispatchers.IO) {
                     val user = dataSource.retUserSuspend()
-                    val api = Api(user[0].subBaseURL)
+                    val api = Api(user .subBaseURL)
 
                     val response = api.call.getBarcode(
                         schema, encryptedBarcode, loginCount, encryptedEmployeeNumber

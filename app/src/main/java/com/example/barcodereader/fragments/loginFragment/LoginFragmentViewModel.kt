@@ -1,9 +1,15 @@
 package com.example.barcodereader.fragments.loginFragment
 
+import AESEncryption
+import AESEncryption.decrypt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.barcodereader.databaes.SavedUsers
+import com.example.barcodereader.databaes.SavedUsersDao
+import com.example.barcodereader.databaes.User
+import com.example.barcodereader.databaes.UserDao
 import com.example.barcodereader.network.Api
 import com.example.barcodereader.network.properties.post.login.LoginRequest
 import com.example.barcodereader.network.properties.post.login.LoginResponse
@@ -11,10 +17,6 @@ import com.example.barcodereader.userData
 import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
 import com.example.barcodereader.utils.TokenDecrypt
-import com.example.barcodereader.databaes.SavedUsers
-import com.example.barcodereader.databaes.SavedUsersDao
-import com.example.barcodereader.databaes.User
-import com.example.barcodereader.databaes.UserDao
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import retrofit2.Response

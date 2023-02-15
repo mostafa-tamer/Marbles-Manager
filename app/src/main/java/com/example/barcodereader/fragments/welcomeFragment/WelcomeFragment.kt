@@ -34,19 +34,16 @@ class WelcomeFragment : Fragment() {
         }
 
         viewModel.retUser()?.observe(viewLifecycleOwner) {
-            it?.let {
-                if (it.isNotEmpty()) {
-                    userData = it[0]
-                    userData.schema = viewModel.decrypt(userData.schema)
-                    findNavController().navigate(
-                        WelcomeFragmentDirections.actionWelcomeFragmentToScanFragment()
-                    )
-                } else {
-                    findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToLoginFragment())
-                }
+            if (it != null) {
+                println(it)
+                userData = it
+                findNavController().navigate(
+                    WelcomeFragmentDirections.actionWelcomeFragmentToScanFragment()
+                )
+            } else {
+                findNavController().navigate(WelcomeFragmentDirections.actionWelcomeFragmentToLoginFragment())
             }
         }
-
 
         return binding.root
     }

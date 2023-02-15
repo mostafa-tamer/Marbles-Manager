@@ -45,8 +45,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
             android:text="Group Name"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="25dp" />
+        <TextView
+            android:id="@+id/pill_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="Pill Name"
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="25dp" />
@@ -110,7 +118,7 @@
                     android:layout_height="match_parent"
                     android:background="@drawable/rounded_button"
                     android:backgroundTint="@color/red"
-                    android:src="@drawable/ic_baseline_save_24"
+                    android:src="@drawable/ic_baseline_send_24"
                     android:text="Scan Barcode"
                     android:textSize="20dp" />
             </com.balysv.materialripple.MaterialRippleLayout>

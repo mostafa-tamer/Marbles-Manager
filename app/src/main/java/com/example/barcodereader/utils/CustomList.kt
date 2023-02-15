@@ -18,6 +18,12 @@ class CustomList<T> : ArrayList<T>() {
         return isAdded
     }
 
+    override fun addAll(elements: Collection<T>): Boolean {
+        val isAdded = super.addAll(elements)
+        sizeLiveData.value = size
+        return isAdded
+    }
+
     override fun clear() {
         super.clear()
         sizeLiveData.value = size

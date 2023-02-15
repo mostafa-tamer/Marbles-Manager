@@ -80,7 +80,7 @@ class MainMenuFragment : Fragment() {
                     viewModel.retUser().observe(viewLifecycleOwner) { userData ->
                         findNavController().navigate(
                             MainMenuFragmentDirections.actionScanFragmentToResultFragment(
-                                it.body()!!.data, userData[0].loginLanguage.lowercase()
+                                it.body()!!.data, userData.loginLanguage.lowercase()
                             )
                         )
                     }
@@ -99,7 +99,7 @@ class MainMenuFragment : Fragment() {
     private fun retApiData(barcode: String) {
         viewModel.retUser().observe(viewLifecycleOwner) {
             viewModel.retRetrofitData(
-                it[0].schema, barcode, it[0].loginCount, it[0].employeeNumber
+                it.schema, barcode, it.loginCount, it.employeeNumber
             )
         }
     }
@@ -195,7 +195,7 @@ class MainMenuFragment : Fragment() {
 
     private fun retUserNameObserver() {
         viewModel.retUser().observe(viewLifecycleOwner) {
-            if (it != null) binding.username.text = "Welcome ${viewModel.decrypt(it[0].userName)}"
+            if (it != null) binding.username.text = "Welcome ${viewModel.decrypt(it.userName)}"
         }
     }
 

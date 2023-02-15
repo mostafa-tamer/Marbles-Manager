@@ -11,9 +11,6 @@ import com.example.barcodereader.databaes.InventoryItem
 import com.example.barcodereader.databaes.TopSoftwareDatabase
 import com.example.barcodereader.databinding.FragmentInventoryScanBinding
 import com.example.barcodereader.databinding.FragmentScanManualBarcodeViewHolderBinding
-import com.example.barcodereader.databinding.ItemPropertiesViewHolderBinding
-import com.example.barcodereader.fragments.scanFragment.LanguageFactory
-import com.example.barcodereader.network.properties.get.marble.Data
 import com.example.barcodereader.network.properties.get.marble.Table
 import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CaptureAct
@@ -34,6 +31,7 @@ class InventoryScanFragment : Fragment() {
     private val itemsList = CustomList<InventoryItem>()
     private lateinit var adapter: InventoryScanAdapter
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -45,10 +43,30 @@ class InventoryScanFragment : Fragment() {
 
         binding.container.adapter = adapter
         binding.groupName.text = "${args.groupName}"
-
+        binding.pillName.text = "${args.pillName}"
+        println(userData.schema)
         listeners()
         observers()
+
         return binding.root
+    }
+
+    private fun retDataObserver() {
+        var once = true
+        viewModel.retData(args.groupCode, args.pillCode).observe(viewLifecycleOwner) {
+            it.let {
+                if (once) {
+                    once = false
+                    it?.let {
+                        itemsList.addAll(it)
+                        adapter.notifyItemRangeChanged(
+                            0,
+                            itemsList.size
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun listeners() {
@@ -58,45 +76,67 @@ class InventoryScanFragment : Fragment() {
         saveButtonListener()
     }
 
-    private fun saveButtonListener() {
-        binding.save.setOnClickListener {
-            if (itemsList.isNotEmpty()) {
-                viewModel.saveData(
-                    itemsList,
-                    userData.schema,
-                    args.pillCode,
-                    args.pillName,
-                    userData.employeeNumber,
-                    args.groupCode,
-                    args.groupMgr,
-                    getCurrentData()
-                )
-
-                itemsList.clear()
-                adapter.notifyDataSetChanged()
-            } else {
-                CustomToast.show(requireContext(), "List Is Empty!")
-            }
-        }
-    }
-
-    private fun clearListListener() {
-        binding.removeAll.setOnClickListener {
-            if (itemsList.isNotEmpty()) {
-                itemsList.clear()
-                adapter.notifyDataSetChanged()
-            } else {
-                CustomToast.show(requireContext(), "List Is Empty!")
-            }
-        }
-    }
-
     private fun observers() {
+        retDataObserver()
         barcodeObserver()
         connectionStatusObserver()
         saveDataResponseObserver()
         listSizeObserver()
     }
+
+    private fun saveButtonListener() {
+        binding.save.setOnClickListener {
+            if (itemsList.isNotEmpty()) {
+                AlertDialog.Builder(requireContext())
+                    .setMessage("Are you sure you want to send this items?")
+                    .setTitle("Warning").setPositiveButton("Send data") { _, _ ->
+
+                        viewModel.sendData(
+                            itemsList,
+                            userData.schema,
+                            args.pillCode,
+                            args.pillName,
+                            userData.employeeNumber,
+                            args.groupCode,
+                            args.groupMgr,
+                            getCurrentData()
+                        )
+
+                        itemsList.clear()
+
+                        adapter.notifyItemRangeChanged(
+                            0,
+                            itemsList.size
+                        )
+                    }.setNegativeButton("Cancel") { _, _ -> }.show()
+            } else {
+                CustomToast.show(requireContext(), "List Is Empty!")
+            }
+        }
+    }
+
+
+    private fun clearListListener() {
+        binding.removeAll.setOnClickListener {
+            if (itemsList.isNotEmpty()) {
+
+                AlertDialog.Builder(requireContext())
+                    .setMessage("Are you sure you want to clear the list?")
+                    .setTitle("Warning").setPositiveButton("Clear List") { dialogInterface, _ ->
+                        itemsList.clear()
+
+                        adapter.notifyItemRangeChanged(
+                            0,
+                            itemsList.size
+                        )
+                        CustomToast.show(requireContext(), "Cleared!")
+                    }.setNegativeButton("Cancel") { _, _ -> }.show()
+            } else {
+                CustomToast.show(requireContext(), "List Is Empty!")
+            }
+        }
+    }
+
 
     private fun saveDataResponseObserver() {
         viewModel.saveDataResponse.work {
@@ -108,8 +148,7 @@ class InventoryScanFragment : Fragment() {
             if (it != null) {
                 dialog.setTitle("Info")
                 dialog.setMessage(it.body()!!.message)
-            }
-            else {
+            } else {
                 dialog.setTitle("Error")
                 dialog.setMessage("Please check the token or the internet connection")
             }
@@ -121,6 +160,10 @@ class InventoryScanFragment : Fragment() {
     private fun listSizeObserver() {
         itemsList.sizeLiveData.observe(viewLifecycleOwner) {
             it?.let {
+
+                viewModel.deleteDataDB(args.groupCode, args.pillCode)
+                viewModel.saveDataDB(itemsList)
+
                 if (it > 0) binding.dummyText.text = ""
                 else binding.dummyText.text = "List Is Empty."
                 binding.textItemCount.text = "Scanned Items: ${it}"
@@ -150,15 +193,19 @@ class InventoryScanFragment : Fragment() {
                             data.zdimension,
                             data.xdimension,
                             data.ydimension,
-                            args.groupCode
+                            args.groupCode,
+                            args.pillCode,
+                            userData.employeeNumber
                         )
 
-                        for (i in 1..100)
+                        for (i in 0..0) {
                             itemsList.add(
                                 inventoryItem
                             )
 
-                        binding.container.layoutManager?.scrollToPosition(itemsList.size - 1)
+                            adapter.notifyItemInserted(itemsList.size - 1)
+                            binding.container.layoutManager?.scrollToPosition(itemsList.size - 1)
+                        }
                     } else {
                         CustomToast.show(requireContext(), "Item Not Found!")
                     }
@@ -182,81 +229,16 @@ class InventoryScanFragment : Fragment() {
 
     private fun viewModelInitialization() {
         val userDao = TopSoftwareDatabase.getInstance(requireContext()).userDao
-        val viewModelFactory = InventoryScanViewModel.InventoryScanViewModelFactory(userDao)
+        val inventoryItemDao = TopSoftwareDatabase.getInstance(requireContext()).inventoryItemDao
+        val viewModelFactory =
+            InventoryScanViewModel.InventoryScanViewModelFactory(userDao, inventoryItemDao)
         viewModel = ViewModelProvider(this, viewModelFactory)[InventoryScanViewModel::class.java]
-    }
-
-    private fun showData(
-        data: Data, table: Table
-    ): View {
-
-        val languageFactory = LanguageFactory()
-        val language = languageFactory.getLanguage(userData.loginLanguage)
-
-        val binding = ItemPropertiesViewHolderBinding.inflate(layoutInflater)
-
-
-        val amount = table.amount
-        val number = table.number
-
-        binding.frz.text = "${language.frz}: "
-        binding.frzEdit.setText(data.frz)
-
-        binding.amount.text = "${language.amount}: "
-        binding.amountEdit.setText(amount)
-
-        binding.number.text = "${language.number}: "
-        binding.numberEdit.setText(number)
-
-        binding.blockNumber.text = "${language.blockNumber}: "
-        binding.height.text = "${language.height}: "
-        binding.length.text = "${language.length}: "
-        binding.width.text = "${language.width}: "
-        binding.itemCode.text = "${language.itemCode}: "
-
-        when (userData.loginLanguage) {
-            "ar" -> {
-                binding.unit.text = language.unit + ": " + data.unit
-                binding.itemName.text = language.itemName + ": " + data.itemName
-                binding.root.layoutDirection = View.LAYOUT_DIRECTION_RTL
-            }
-            "en" -> {
-                binding.unit.text = language.unit + ": " + data.unitLanguages.En
-                binding.itemName.text = language.itemName + ": " + data.itemNameLanguages.En
-            }
-            "de" -> {
-                binding.unit.text = language.unit + ": " + data.unitLanguages.De
-                binding.itemName.text = language.itemName + ": " + data.itemNameLanguages.De
-            }
-            "es" -> {
-                binding.unit.text = language.unit + ": " + data.unitLanguages.Es
-                binding.itemName.text = language.itemName + ": " + data.itemNameLanguages.Es
-            }
-            "fr" -> {
-                binding.unit.text = language.unit + ": " + data.unitLanguages.Fr
-                binding.itemName.text = language.itemName + ": " + data.itemNameLanguages.Fr
-            }
-            "it" -> {
-                binding.unit.text = language.unit + ": " + data.unitLanguages.It
-                binding.itemName.text = language.itemName + ": " + data.itemNameLanguages.It
-            }
-            "ru" -> {
-                binding.unit.text = language.unit + ": " + data.unitLanguages.Ru
-                binding.itemName.text = language.itemName + ": " + data.itemNameLanguages.Ru
-            }
-            "tr" -> {
-                binding.unit.text = language.unit + ": " + data.unitLanguages.Tr
-                binding.itemName.text = language.itemName + ": " + data.itemNameLanguages.Tr
-            }
-        }
-
-        return binding.root
     }
 
     private fun retApiData(barcode: String) {
         viewModel.retUser().observe(viewLifecycleOwner) {
             viewModel.retRetrofitData(
-                it[0].schema, barcode, it[0].loginCount, it[0].employeeNumber
+                it.schema, barcode, it.loginCount, it.employeeNumber
             )
         }
     }
