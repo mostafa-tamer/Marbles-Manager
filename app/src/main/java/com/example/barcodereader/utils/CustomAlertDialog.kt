@@ -2,6 +2,8 @@ package com.example.barcodereader.utils
 
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import com.example.barcodereader.databinding.CustomAlertDialogBinding
@@ -14,6 +16,10 @@ class CustomAlertDialog(private val context: Context) {
     init {
         alertDialog.setView(layout.root)
         initializeVisibility()
+        alertDialog.window
+            ?.setBackgroundDrawable(
+                ColorDrawable(Color.TRANSPARENT)
+            )
     }
 
     private fun initializeVisibility() {
@@ -68,12 +74,12 @@ class CustomAlertDialog(private val context: Context) {
     fun setOnDismiss(function: (CustomAlertDialog) -> Unit): CustomAlertDialog {
         alertDialog.setOnDismissListener {
             function(this)
-            resetDialog()
         }
         return this
     }
 
     fun setBody(view: View): CustomAlertDialog {
+        resetDialog()
         layout.body.visibility = View.VISIBLE
         layout.body.addView(view)
         return this

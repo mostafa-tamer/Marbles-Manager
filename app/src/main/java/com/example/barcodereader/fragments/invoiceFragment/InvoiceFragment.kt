@@ -13,6 +13,9 @@ class InvoiceFragment : Fragment() {
 
     lateinit var binding: FragmentInvoiceBinding
     lateinit var args: InvoiceFragmentArgs
+
+    private var lock = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,10 +32,9 @@ class InvoiceFragment : Fragment() {
                 FragmentInventoryCardsBinding.inflate(layoutInflater)
             fragmentInventoryCardBinding.factoryButton.text =
                 "${pill.nameAr}"
-
-            var lock = false
             fragmentInventoryCardBinding.factoryButton.setOnClickListener {
                 if (!lock) {
+                    lock = true
                     findNavController().navigate(
                         InvoiceFragmentDirections.actionInvoiceFragmentToScanInventoryFragment(
                             args.groupName,
@@ -42,11 +44,14 @@ class InvoiceFragment : Fragment() {
                             pill.code
                         )
                     )
-                    lock = true
                 }
             }
             binding.container.addView(fragmentInventoryCardBinding.root)
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        lock = false
+    }
 }

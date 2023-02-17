@@ -13,6 +13,9 @@ class GroupFragment : Fragment() {
 
     lateinit var binding: FragmentGroupBinding
     lateinit var args: GroupFragmentArgs
+
+    private   var lock = false
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -31,9 +34,9 @@ class GroupFragment : Fragment() {
             fragmentInventoryCardBinding.factoryButton.text =
                 "${branch.groupName}"
 
-            var lock = false
             fragmentInventoryCardBinding.factoryButton.setOnClickListener {
                 if (!lock) {
+                    lock = true
                     findNavController().navigate(
                         GroupFragmentDirections.actionInventoryFragmentToInvoiceFragment(
                             branch.groupName,
@@ -42,11 +45,15 @@ class GroupFragment : Fragment() {
                             args.group
                         )
                     )
-                    lock = true
                 }
             }
 
             binding.container.addView(fragmentInventoryCardBinding.root)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lock = false
     }
 }

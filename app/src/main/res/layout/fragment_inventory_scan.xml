@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    tools:context=".fragments.inventoryScanFragment.InventoryScanFragment">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/progress_bar" />
 
         <View
             android:layout_width="match_parent"
@@ -22,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@drawable/rounded_frame" />
+            android:background="@color/red" />
 
         <View
             android:layout_width="match_parent"
@@ -49,6 +52,7 @@
             android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="25dp" />
+
         <TextView
             android:id="@+id/pill_name"
             android:layout_width="match_parent"
@@ -85,12 +89,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageButton
+                <com.example.barcodereader.utils.CustomImageButton
                     android:id="@+id/remove_all"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/rounded_button"
                     android:backgroundTint="@color/red"
+                    android:padding="5dp"
                     android:src="@drawable/ic_baseline_delete_24"
                     android:text="Scan Barcode"
                     android:textSize="20dp" />
@@ -111,16 +116,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageButton
-
+                <com.example.barcodereader.utils.CustomImageButton
                     android:id="@+id/save"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/rounded_button"
                     android:backgroundTint="@color/red"
-                    android:src="@drawable/ic_baseline_send_24"
-                    android:text="Scan Barcode"
-                    android:textSize="20dp" />
+                    android:padding="5dp"
+                    android:src="@drawable/ic_baseline_send_24" />
             </com.balysv.materialripple.MaterialRippleLayout>
         </androidx.cardview.widget.CardView>
 
@@ -138,15 +141,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageButton
+                <com.example.barcodereader.utils.CustomImageButton
                     android:id="@+id/scan_button_manual"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/rounded_button"
                     android:backgroundTint="@color/red"
+                    android:padding="5dp"
                     android:src="@drawable/ic_baseline_text_fields_24"
-                    android:text="Manual Barcode"
-                    android:textSize="20dp" />
+                    android:text="Manual Barcode" />
             </com.balysv.materialripple.MaterialRippleLayout>
         </androidx.cardview.widget.CardView>
 
@@ -164,13 +167,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageButton
-
+                <com.example.barcodereader.utils.CustomImageButton
                     android:id="@+id/scan_button_camera"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@drawable/rounded_button"
                     android:backgroundTint="@color/red"
+                    android:padding="5dp"
                     android:src="@drawable/ic_baseline_photo_camera_24"
                     android:text="Scan Barcode"
                     android:textSize="20dp" />
@@ -210,9 +213,11 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:reverseLayout="true"
-            app:stackFromEnd="true"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            app:stackFromEnd="true" />
     </RelativeLayout>
 
 </RelativeLayout>
+
+

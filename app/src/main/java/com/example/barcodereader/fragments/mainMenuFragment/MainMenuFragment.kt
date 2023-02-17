@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.barcodereader.databaes.TopSoftwareDatabase
@@ -15,8 +15,6 @@ import com.example.barcodereader.databinding.FragmentScanManualBarcodeViewHolder
 import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CaptureAct
 import com.example.barcodereader.utils.CustomAlertDialog
-
-import com.example.barcodereader.utils.Lock
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
@@ -27,19 +25,17 @@ class MainMenuFragment : Fragment() {
     private lateinit var binding: FragmentScanBinding
     private lateinit var viewModel: MainMenuViewModel
 
-    private val logoutButtonLock = Lock()
-    private val cameraButtonLock = Lock()
-    private val manualButtonLock = Lock()
-    private val inventoryButtonLock = Lock()
-
-    private lateinit var alertDialogConnectionLoading: CustomAlertDialog
-    private lateinit var alertDialogManual: CustomAlertDialog
     private lateinit var connectionStatusAlertDialog: CustomAlertDialog
     private lateinit var marblesErrorAlertDialog: CustomAlertDialog
+    private lateinit var failToGetDataAlertDialog: CustomAlertDialog
+    private lateinit var manualAlertDialog: CustomAlertDialog
 
-
-    private lateinit var failToGetDataToast: Toast
+    private lateinit var pleaseWriteBarcodeToast: Toast
+    private lateinit var pleaseWaitTheInteractionToast: Toast
     private lateinit var fillAllFieldsToast: Toast
+    private lateinit var errorOccurred: Toast
+
+    private val visibleSpinner = MutableLiveData(4)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -59,22 +55,35 @@ class MainMenuFragment : Fragment() {
     }
 
     private fun listeners() {
+        inventoryButtonListener()
         scanCameraBarcodeListener()
         scanManualBarcodeListener()
         logoutButtonListener()
-        inventoryButtonListener()
     }
 
     private fun observers() {
-//        userLoginObserve()
+        spinnerVisibilityObserver()
         barcodeObserver()
         logoutStatusObserver()
         connectionStatusObserver()
         groupsPillObserver()
     }
+
+    private fun spinnerVisibilityObserver() {
+        visibleSpinner.observe(viewLifecycleOwner) {
+            if (it == 0) {
+                lockButtons()
+            } else {
+                unlockButtons()
+            }
+        }
+    }
+
     private fun toastInitialization() {
         fillAllFieldsToast = createToast("Please fill all fields")
-        failToGetDataToast = createToast("Failed to get Data")
+        pleaseWriteBarcodeToast = createToast("Please write the barcode!")
+        pleaseWaitTheInteractionToast = createToast("Please wait The interaction!")
+        errorOccurred = createToast("Error Occurred!")
     }
 
     private fun createToast(message: String): Toast {
@@ -86,34 +95,47 @@ class MainMenuFragment : Fragment() {
     }
 
     private fun alertDialogInitialization() {
-        alertDialogConnectionLoading = CustomAlertDialog(requireContext())
-        alertDialogManual = CustomAlertDialog(requireContext())
         connectionStatusAlertDialog = CustomAlertDialog(requireContext())
         marblesErrorAlertDialog = CustomAlertDialog(requireContext())
+        failToGetDataAlertDialog = CustomAlertDialog(requireContext())
+        manualAlertDialog = CustomAlertDialog(requireContext())
     }
 
-    private fun userLoginObserve() {
-        viewModel.checkConnection()
-        viewModel.loginStatus.observe(viewLifecycleOwner) {
-            it?.let {
+    private fun spinnerVisible() {
+        binding.progressBar.visibility = View.VISIBLE
+        visibleSpinner.value = 0
+    }
 
-            }
-        }
+    private fun spinnerInvisible() {
+        binding.progressBar.visibility = View.INVISIBLE
+        visibleSpinner.value = 4
+    }
+
+    private fun lockButtons() {
+        binding.inventory.lockButton()
+        binding.scanButtonManual.lockButton()
+        binding.scanButtonCamera.lockButton()
+        binding.logoutButton.lockButton()
+    }
+
+    private fun unlockButtons() {
+        binding.scanButtonCamera.unlockButton()
+        binding.scanButtonManual.unlockButton()
+        binding.inventory.unlockButton()
+        binding.logoutButton.unlockButton()
     }
 
     private fun inventoryButtonListener() {
         binding.inventory.setOnClickListener {
-            if (!inventoryButtonLock.status) {
-                lockButtons()
-                binding.progressBar.visibility = View.VISIBLE
-                viewModel.branchesPills()
-            }
+            viewModel.branchesPills()
+            spinnerVisible()
         }
     }
 
     private fun groupsPillObserver() {
         viewModel.groups.work {
             it?.let { response ->
+                println(response)
                 if (response.code() == 200) {
                     findNavController().navigate(
                         MainMenuFragmentDirections.actionScanFragmentToInventoryFragment(
@@ -121,8 +143,14 @@ class MainMenuFragment : Fragment() {
                         )
                     )
                 } else {
-                    failToGetDataToast.show()
+                    failToGetDataAlertDialog
+                        .setTitle("Error")
+                        .setMessage(response.body()!!.message)
+                        .setPositiveButton("Ok") {
+                            it.dismiss()
+                        }.showDialog()
                 }
+                spinnerInvisible()
             }
         }
     }
@@ -145,40 +173,16 @@ class MainMenuFragment : Fragment() {
                             it.dismiss()
                         }.showDialog()
                 }
-                binding.progressBar.visibility = View.GONE
+                spinnerInvisible()
             }
         }
     }
 
     private fun retApiData(barcode: String) {
-        viewModel.retUser().observe(viewLifecycleOwner) {
-            viewModel.retRetrofitData(
-                it.schema, barcode, it.loginCount, it.employeeNumber
-            )
-        }
-    }
-
-    private fun scanCameraBarcodeListener() {
-        binding.scanButtonCamera.setOnClickListener {
-            if (!cameraButtonLock.status) {
-                lockButtons()
-                binding.progressBar.visibility = View.VISIBLE
-
-                val scanOptions = ScanOptions()
-                    .setPrompt("Volume up to flash on")
-                    .setBeepEnabled(true)
-                    .setOrientationLocked(true)
-                    .setCaptureActivity(CaptureAct::class.java)
-                barLauncher.launch(scanOptions)
-            }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (!binding.progressBar.isVisible) {
-            unlockButtons()
-        }
+        spinnerVisible()
+        viewModel.retRetrofitData(
+            userData.schema, barcode, userData.loginCount, userData.employeeNumber
+        )
     }
 
     private fun barcodeObserver() {
@@ -186,7 +190,6 @@ class MainMenuFragment : Fragment() {
             it?.let {
                 val updatedBarcode = makeupBarcode(it)
                 marbleObserver()
-                binding.progressBar.visibility = View.VISIBLE
                 retApiData(updatedBarcode)
             }
         }
@@ -194,28 +197,36 @@ class MainMenuFragment : Fragment() {
 
     private fun scanManualBarcodeListener() {
         binding.scanButtonManual.setOnClickListener {
-            var unLock = true
-            if (!manualButtonLock.status) {
-                lockButtons()
-                val manualBarcodeViewHolderBinding =
-                    FragmentScanManualBarcodeViewHolderBinding.inflate(layoutInflater)
-                alertDialogManual.setBody(manualBarcodeViewHolderBinding.root)
-                    .setTitle("Barcode")
-                    .setNegativeButton("Cancel") {
-                        it.dismiss()
-                    }.setPositiveButton("Ok") {
+            val manualBarcodeViewHolderBinding =
+                FragmentScanManualBarcodeViewHolderBinding.inflate(layoutInflater)
+            manualAlertDialog
+                .setBody(manualBarcodeViewHolderBinding.root)
+                .setTitle("Barcode").setNegativeButton("Cancel")
+                .setPositiveButton("Ok") {
+                    if (visibleSpinner.value!! == 4) {
                         if (manualBarcodeViewHolderBinding.barcode.text.toString().isNotEmpty()) {
-                            viewModel.barcode.setValue(manualBarcodeViewHolderBinding.barcode.text.toString())
                             it.dismiss()
-                            unLock = false
+                            viewModel.barcode.setValue(manualBarcodeViewHolderBinding.barcode.text.toString())
                         } else {
-                            fillAllFieldsToast.show()
+                            pleaseWriteBarcodeToast.show()
                         }
-                    }.setOnDismiss {
-                        if (unLock)
-                            unlockButtons()
-                    }.showDialog()
-            }
+                    } else {
+                        pleaseWaitTheInteractionToast.show()
+                    }
+                }.setNegativeButton("Cancel") {
+                    it.dismiss()
+                }.showDialog()
+        }
+    }
+
+    private fun scanCameraBarcodeListener() {
+        binding.scanButtonCamera.setOnClickListener {
+            val scanOptions = ScanOptions()
+                .setPrompt("Volume up to flash on")
+                .setBeepEnabled(true)
+                .setOrientationLocked(true)
+                .setCaptureActivity(CaptureAct::class.java)
+            barLauncher.launch(scanOptions)
         }
     }
 
@@ -223,11 +234,7 @@ class MainMenuFragment : Fragment() {
         ScanContract()
     ) { result: ScanIntentResult ->
         if (result.contents != null) {
-
-            val updatedBarcode: String = makeupBarcode(result.contents)
-
-            marbleObserver()
-            retApiData(updatedBarcode)
+            viewModel.barcode.setValue(result.contents)
         }
     }
 
@@ -251,12 +258,10 @@ class MainMenuFragment : Fragment() {
         viewModel.connectionStatus.work {
             it?.let {
                 if (!it) {
-                    binding.progressBar.visibility = View.GONE
-                    unlockButtons()
+                    spinnerInvisible()
                     connectionStatusAlertDialog
                         .setMessage("Please check the token or the internet connection")
-                        .setTitle("Error")
-                        .setPositiveButton("OK") {
+                        .setTitle("Error").setPositiveButton("OK") {
                             it.dismiss()
                         }.showDialog()
                 }
@@ -268,7 +273,7 @@ class MainMenuFragment : Fragment() {
         viewModel.logoutStatus.work {
             it?.let {
                 if (!it) {
-                    Toast.makeText(requireContext(), "Failed To Logout", Toast.LENGTH_SHORT).show()
+                    errorOccurred.show()
                     unlockButtons()
                 } else {
                     findNavController().navigate(MainMenuFragmentDirections.actionScanFragmentToLoginFragment())
@@ -285,25 +290,22 @@ class MainMenuFragment : Fragment() {
     }
 
     private fun logoutButtonListener() {
+
+//        binding.logoutButton.setOnTouchListener { _, event ->
+//            lockButtons()
+//            viewModel.logout()
+//            event.action == MotionEvent.ACTION_UP
+//        }
+//
         binding.logoutButton.setOnClickListener {
-            if (!logoutButtonLock.status) {
-                lockButtons()
-                viewModel.logout()
-            }
+            lockButtons()
+            viewModel.logout()
         }
     }
 
-    private fun unlockButtons() {
-        inventoryButtonLock.status = false
-        logoutButtonLock.status = false
-        manualButtonLock.status = false
-        cameraButtonLock.status = false
-    }
 
-    private fun lockButtons() {
-        inventoryButtonLock.status = true
-        logoutButtonLock.status = true
-        manualButtonLock.status = true
-        cameraButtonLock.status = true
+    override fun onStop() {
+        manualAlertDialog.dismiss()
+        super.onStop()
     }
 }

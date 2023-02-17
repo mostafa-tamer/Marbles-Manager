@@ -32,34 +32,20 @@ class MainMenuViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
         }
     }
 
-    fun checkConnection() {
-
-        viewModelScope.launch {
-            try {
-                val api = Api(userData.subBaseURL)
-
-                val loginResponse: Response<LoginResponse> = api.call.login(
-                    LoginRequest(
-                        userData.userName,
-                        userData.password,
-                        userData.schema
-                    )
-                )
-
-                loginStatus.value = loginResponse.isSuccessful
-
-            } catch (e: Exception) {
-                loginStatus.value = false
-            }
-        }
-    }
-
-
     fun branchesPills() {
         viewModelScope.launch {
             try {
                 val api = Api(userData.subBaseURL)
-                groups.setValue(api.call.getBranches(userData.schema))
+
+                println(userData)
+
+                groups.setValue(
+                    api.call.getBranches(
+                        userData.schema,
+                        userData.loginCount,
+                        userData.employeeNumber
+                    )
+                )
 
                 connectionStatus.setValue(true)
             } catch (e: Exception) {

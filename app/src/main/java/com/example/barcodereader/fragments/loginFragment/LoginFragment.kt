@@ -88,6 +88,7 @@ class LoginFragment : Fragment() {
                         val fragmentLoginSavedUsersViewHolderBinding =
                             FragmentLoginSavedUsersContainerBinding.inflate(layoutInflater)
 
+
                         users.forEach { savedUser ->
                             val fragmentLoginSavedUserButtonBinding =
                                 FragmentLoginSavedUserButtonBinding.inflate(layoutInflater)
@@ -109,8 +110,9 @@ class LoginFragment : Fragment() {
 
                         savedUsersAlertDialogIsNotEmpty
                             .setTitle("Saved Users")
-                            .setPositiveButton("OK"){                                it.dismiss()
-                            it.dismiss()
+                            .setPositiveButton("OK") {
+                                it.dismiss()
+                                it.dismiss()
                             }
                             .setBody(fragmentLoginSavedUsersViewHolderBinding.root)
                             .setNegativeButton("Clear") {
@@ -193,7 +195,7 @@ class LoginFragment : Fragment() {
                         .setTitle("Login Failed")
                         .setPositiveButton("OK") {
                             it.dismiss()
-                        } .showDialog()
+                        }.showDialog()
                 }
             }
         }

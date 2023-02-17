@@ -12,7 +12,7 @@
 
         <ProgressBar
             android:id="@+id/progress_bar"
-            style="@style/progress_bar"  />
+            style="@style/progress_bar" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,12 +54,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <Button
+                    <com.example.barcodereader.utils.CustomButton
                         android:id="@+id/inventory"
                         android:layout_width="200dp"
                         android:layout_height="110dp"
                         android:background="@drawable/rounded_button"
+                        android:backgroundTint="@color/red"
+                        android:gravity="center"
                         android:text="Inventory"
+                        android:textColor="@color/white"
                         android:textSize="20dp" />
                 </com.balysv.materialripple.MaterialRippleLayout>
             </androidx.cardview.widget.CardView>
@@ -77,12 +80,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <Button
+                    <com.example.barcodereader.utils.CustomButton
                         android:id="@+id/scan_button_camera"
                         android:layout_width="200dp"
                         android:layout_height="110dp"
                         android:background="@drawable/rounded_button"
+                        android:backgroundTint="@color/red"
+                        android:gravity="center"
                         android:text="Scan Barcode"
+                        android:textColor="@color/white"
                         android:textSize="20dp" />
                 </com.balysv.materialripple.MaterialRippleLayout>
             </androidx.cardview.widget.CardView>
@@ -100,12 +106,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <Button
+                    <com.example.barcodereader.utils.CustomButton
                         android:id="@+id/scan_button_manual"
                         android:layout_width="200dp"
                         android:layout_height="110dp"
                         android:background="@drawable/rounded_button"
+                        android:backgroundTint="@color/red"
+                        android:gravity="center"
                         android:text="Manual Barcode"
+                        android:textColor="@color/white"
                         android:textSize="20dp" />
                 </com.balysv.materialripple.MaterialRippleLayout>
             </androidx.cardview.widget.CardView>
@@ -121,12 +130,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <Button
+                    <com.example.barcodereader.utils.CustomButton
                         android:id="@+id/logout_button"
                         android:layout_width="200dp"
                         android:layout_height="110dp"
                         android:background="@drawable/rounded_button"
+                        android:backgroundTint="@color/red"
+                        android:gravity="center"
                         android:text="Logout"
+                        android:textColor="@color/white"
                         android:textSize="20dp" />
                 </com.balysv.materialripple.MaterialRippleLayout>
             </androidx.cardview.widget.CardView>

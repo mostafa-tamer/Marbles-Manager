@@ -223,6 +223,7 @@
                         android:text=": " />
 
                     <EditText
+                        android:layoutDirection="ltr"
                         android:id="@+id/amount_edit"
                         style="@style/item_properties_fragment_result"
                         android:ems="6"
@@ -277,7 +278,7 @@
                         android:text=": " />
 
                     <EditText
-
+                        android:layoutDirection="ltr"
                         android:id="@+id/number_edit"
                         style="@style/item_properties_fragment_result"
                         android:ems="6"

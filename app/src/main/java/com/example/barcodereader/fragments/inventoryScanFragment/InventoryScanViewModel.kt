@@ -86,16 +86,16 @@ class InventoryScanViewModel(
                 )
 
                 saveDataResponse.setValue(
-                    api.call.saveData(
-                        saveDataRequest
+                    api.call.sendData(
+                        saveDataRequest,
+                        userData.loginCount,
+                        userData.employeeNumber
                     )
                 )
-
+                connectionStatus.setValue(false)
             } catch (e: Exception) {
-                saveDataResponse.setValue(null)
-                e.stackTrace.forEach {
-                    println(it)
-                }
+                connectionStatus.setValue(false)
+
             }
         }
     }
