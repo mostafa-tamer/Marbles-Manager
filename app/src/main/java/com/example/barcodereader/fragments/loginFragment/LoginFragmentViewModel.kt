@@ -1,7 +1,6 @@
 package com.example.barcodereader.fragments.loginFragment
 
 import AESEncryption
-import AESEncryption.decrypt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -26,8 +25,6 @@ class LoginFragmentViewModel(
     private val savedUsersDao: SavedUsersDao
 ) : ViewModel() {
 
-    private var savedUsers = savedUsersDao.retUsers()
-    fun getSavedUsers() = savedUsers
 
     val connectionStatus = Observable(true)
     val saveUserDatabaseStatus = MutableLiveData(true)
@@ -38,6 +35,8 @@ class LoginFragmentViewModel(
     private lateinit var username: String
     private lateinit var password: String
     private lateinit var token: String
+
+    suspend fun getSavedUsersSuspend() = savedUsersDao.retUsersSuspend()
 
     fun login(
         username: String,
@@ -107,6 +106,7 @@ class LoginFragmentViewModel(
         subBaseURL: String
     ): Boolean {
         val user = User(
+            response.data.employeeName,
             loginRequest.userName,
             loginRequest.password,
             loginRequest.schema,

@@ -1,11 +1,12 @@
 package com.example.barcodereader.fragments.viewModels
 
-import androidx.lifecycle.MutableLiveData
+import AESEncryption
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.barcodereader.databaes.UserDao
 import com.example.barcodereader.network.Api
 import com.example.barcodereader.network.properties.get.marble.Marble
+import com.example.barcodereader.userData
 import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
 import kotlinx.coroutines.Dispatchers
@@ -15,9 +16,9 @@ import retrofit2.Response
 
 abstract class ScanViewModel(private val dataSource: UserDao) : ViewModel() {
 
-    val connectionStatus = MutableLiveData(true)
+    val connectionStatus = Observable(true)
     val barcode = Observable("")
-    val marble = Observable<Response<Marble>>()
+    val marbles = Observable<Response<Marble>>()
 
     fun retUser() = dataSource.retUser()
 
@@ -28,24 +29,21 @@ abstract class ScanViewModel(private val dataSource: UserDao) : ViewModel() {
 
         viewModelScope.launch {
             try {
-
                 withContext(Dispatchers.IO) {
-                    val user = dataSource.retUserSuspend()
-                    val api = Api(user .subBaseURL)
-
+                    val api = Api(userData.subBaseURL)
                     val response = api.call.getBarcode(
                         schema, encryptedBarcode, loginCount, encryptedEmployeeNumber
                     )
 
                     withContext(Dispatchers.Main) {
-                        marble.setValue(response)
+                        marbles.setValue(response)
                         connectionStatus.setValue(true)
                     }
                 }
 
             } catch (e: Exception) {
                 println("Exception in ResultFragmentViewModel => retRetrofitData(): " + e.message)
-                connectionStatus.setValue(true)
+                connectionStatus.setValue(false)
             }
         }
     }

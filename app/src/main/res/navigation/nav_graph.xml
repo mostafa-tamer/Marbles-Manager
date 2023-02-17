@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/scanFragment"
-        android:name="com.example.barcodereader.fragments.scanFragment.MainMenuFragment"
+        android:name="com.example.barcodereader.fragments.mainMenuFragment.MainMenuFragment"
         android:label="fragment_scan"
         tools:layout="@layout/fragment_scan">
         <action

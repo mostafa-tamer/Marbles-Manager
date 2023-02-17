@@ -1,132 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context=".fragments.scanFragment.MainMenuFragment">
+    android:fillViewport="true">
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:shadowDx="2"
-            android:shadowDy="2"
-            android:shadowRadius="10"
-            android:text="Username"
-            android:textColor="@color/black"
-            android:textSize="30dp"
-            android:textStyle="bold" />
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="@style/progress_bar"  />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            tools:context=".fragments.mainMenuFragment.MainMenuFragment">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/username"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:shadowDx="2"
+                    android:shadowDy="2"
+                    android:shadowRadius="10"
+                    android:text="Username"
+                    android:textColor="@color/black"
+                    android:textSize="30dp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@color/black"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="8dp">
+
+                <com.balysv.materialripple.MaterialRippleLayout
+                    style="@style/ripple_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/inventory"
+                        android:layout_width="200dp"
+                        android:layout_height="110dp"
+                        android:background="@drawable/rounded_button"
+                        android:text="Inventory"
+                        android:textSize="20dp" />
+                </com.balysv.materialripple.MaterialRippleLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@color/black"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="8dp">
+
+                <com.balysv.materialripple.MaterialRippleLayout
+                    style="@style/ripple_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/scan_button_camera"
+                        android:layout_width="200dp"
+                        android:layout_height="110dp"
+                        android:background="@drawable/rounded_button"
+                        android:text="Scan Barcode"
+                        android:textSize="20dp" />
+                </com.balysv.materialripple.MaterialRippleLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@color/black"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="8dp">
+
+                <com.balysv.materialripple.MaterialRippleLayout
+                    style="@style/ripple_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/scan_button_manual"
+                        android:layout_width="200dp"
+                        android:layout_height="110dp"
+                        android:background="@drawable/rounded_button"
+                        android:text="Manual Barcode"
+                        android:textSize="20dp" />
+                </com.balysv.materialripple.MaterialRippleLayout>
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="8dp">
+
+                <com.balysv.materialripple.MaterialRippleLayout
+                    style="@style/ripple_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/logout_button"
+                        android:layout_width="200dp"
+                        android:layout_height="110dp"
+                        android:background="@drawable/rounded_button"
+                        android:text="Logout"
+                        android:textSize="20dp" />
+                </com.balysv.materialripple.MaterialRippleLayout>
+            </androidx.cardview.widget.CardView>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="30dp" />
+            </FrameLayout>
+        </LinearLayout>
     </FrameLayout>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:backgroundTint="@color/black"
-        app:cardCornerRadius="14dp"
-        app:cardElevation="14dp">
-
-        <com.balysv.materialripple.MaterialRippleLayout
-            style="@style/ripple_style"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/inventory"
-                android:layout_width="200dp"
-                android:layout_height="110dp"
-                android:background="@drawable/rounded_button"
-                android:text="Inventory"
-                android:textSize="20dp" />
-        </com.balysv.materialripple.MaterialRippleLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:backgroundTint="@color/black"
-        app:cardCornerRadius="14dp"
-        app:cardElevation="14dp">
-
-        <com.balysv.materialripple.MaterialRippleLayout
-            style="@style/ripple_style"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/scan_button_camera"
-                android:layout_width="200dp"
-                android:layout_height="110dp"
-                android:background="@drawable/rounded_button"
-                android:text="Scan Barcode"
-                android:textSize="20dp" />
-        </com.balysv.materialripple.MaterialRippleLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:backgroundTint="@color/black"
-        app:cardCornerRadius="14dp"
-        app:cardElevation="14dp">
-
-        <com.balysv.materialripple.MaterialRippleLayout
-            style="@style/ripple_style"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/scan_button_manual"
-                android:layout_width="200dp"
-                android:layout_height="110dp"
-                android:background="@drawable/rounded_button"
-                android:text="Manual Barcode"
-                android:textSize="20dp" />
-        </com.balysv.materialripple.MaterialRippleLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="14dp"
-        app:cardElevation="14dp">
-
-        <com.balysv.materialripple.MaterialRippleLayout
-            style="@style/ripple_style"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <Button
-                android:id="@+id/logout_button"
-                android:layout_width="200dp"
-                android:layout_height="110dp"
-                android:background="@drawable/rounded_button"
-                android:text="Logout"
-                android:textSize="20dp" />
-        </com.balysv.materialripple.MaterialRippleLayout>
-    </androidx.cardview.widget.CardView>
-
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30dp" />
-    </FrameLayout>
-</LinearLayout>
+</ScrollView>

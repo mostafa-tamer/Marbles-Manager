@@ -85,5 +85,11 @@
         <item name="android:layout_marginLeft">10dp</item>
     </style>
 
-
+    <style name="progress_bar">
+        <item name="android:visibility">gone</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_gravity">end|top</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
 </resources>

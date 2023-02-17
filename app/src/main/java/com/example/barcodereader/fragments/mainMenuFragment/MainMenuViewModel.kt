@@ -1,22 +1,24 @@
-package com.example.barcodereader.fragments.scanFragment
+package com.example.barcodereader.fragments.mainMenuFragment
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.barcodereader.databaes.UserDao
 import com.example.barcodereader.fragments.viewModels.ScanViewModel
 import com.example.barcodereader.network.Api
-import com.example.barcodereader.utils.GlobalKeys
-import com.example.barcodereader.utils.Observable
-import com.example.barcodereader.databaes.UserDao
 import com.example.barcodereader.network.properties.get.groups.Groups
+import com.example.barcodereader.network.properties.post.login.LoginRequest
+import com.example.barcodereader.network.properties.post.login.LoginResponse
+import com.example.barcodereader.userData
+import com.example.barcodereader.utils.Observable
 import kotlinx.coroutines.launch
-import okhttp3.internal.notify
 import retrofit2.Response
 
 class MainMenuViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
 
-    val logoutStatus = MutableLiveData(true)
+    val logoutStatus = Observable(true)
+    val loginStatus = MutableLiveData(true)
     var groups = Observable<Response<Groups>>()
 
     fun logout() {
@@ -30,16 +32,35 @@ class MainMenuViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
         }
     }
 
-    fun decrypt(value: String): String {
-        return AESEncryption.decrypt(value, GlobalKeys.KEY)
-    }
+    fun checkConnection() {
 
-    fun getBranches() {
         viewModelScope.launch {
             try {
-                val user = userDao.retUserSuspend()
-                val api = Api(user.subBaseURL)
-                groups.setValue(api.call.getBranches(user.schema))
+                val api = Api(userData.subBaseURL)
+
+                val loginResponse: Response<LoginResponse> = api.call.login(
+                    LoginRequest(
+                        userData.userName,
+                        userData.password,
+                        userData.schema
+                    )
+                )
+
+                loginStatus.value = loginResponse.isSuccessful
+
+            } catch (e: Exception) {
+                loginStatus.value = false
+            }
+        }
+    }
+
+
+    fun branchesPills() {
+        viewModelScope.launch {
+            try {
+                val api = Api(userData.subBaseURL)
+                groups.setValue(api.call.getBranches(userData.schema))
+
                 connectionStatus.setValue(true)
             } catch (e: Exception) {
                 connectionStatus.setValue(false)

@@ -1,23 +1,38 @@
 package com.example.barcodereader.fragments.loginFragment
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.barcodereader.databaes.TopSoftwareDatabase
 import com.example.barcodereader.databinding.FragmentLoginBinding
 import com.example.barcodereader.databinding.FragmentLoginSavedUserButtonBinding
 import com.example.barcodereader.databinding.FragmentLoginSavedUsersContainerBinding
-import com.example.barcodereader.utils.CustomToast
-import com.example.barcodereader.databaes.TopSoftwareDatabase
+import com.example.barcodereader.utils.CustomAlertDialog
+import com.example.barcodereader.utils.Lock
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
-    lateinit var binding: FragmentLoginBinding
-    lateinit var viewModel: LoginFragmentViewModel
+    private lateinit var binding: FragmentLoginBinding
+    private lateinit var viewModel: LoginFragmentViewModel
+
+    private lateinit var loginFailedAlertDialog: CustomAlertDialog
+    private lateinit var tokenInternetAlertDialog: CustomAlertDialog
+    private lateinit var savedUsersAlertDialogIsNotEmpty: CustomAlertDialog
+    private lateinit var savedUsersAlertDialogIsEmpty: CustomAlertDialog
+
+    private lateinit var fillAllFieldsToast: Toast
+    private lateinit var clearedToast: Toast
+    private lateinit var errorOccurredToast: Toast
+
+    private var loginButtonLock = Lock()
+    private var savedUsersButtonLock = Lock()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -27,76 +42,28 @@ class LoginFragment : Fragment() {
 
         viewModelInitialization()
 
+        alertDialogsInitialization()
+        toastInitialization()
+
         observers()
         listeners()
 
         return binding.root
     }
 
-    private fun listeners() {
-        loginButtonClickListener()
-        savedUsersListener()
+    private fun toastInitialization() {
+        fillAllFieldsToast = createToast("Please fill all fields!")
+        clearedToast = createToast("Cleared")
+        errorOccurredToast = createToast("Error Occurred")
     }
 
-    private fun savedUsersListener() {
-        var isShowing = false
-        binding.savedUsers.setOnClickListener {
-            var firstTry = false
-            if (!isShowing) {
-                isShowing = true
-                viewModel.getSavedUsers().observe(viewLifecycleOwner) {
-                    it?.let {
-                        if (it.isNotEmpty()) {
-                            val fragmentLoginSavedUsersViewHolderBinding =
-                                FragmentLoginSavedUsersContainerBinding.inflate(layoutInflater)
-
-                            val alertDialog = AlertDialog.Builder(requireContext())
-                                .setTitle("Saved Users")
-                                .setView(fragmentLoginSavedUsersViewHolderBinding.root)
-                                .setPositiveButton("OK") { _, _ -> }
-                                .setNegativeButton("Clear") { _, _ ->
-                                    viewModel.clearSavedUsersData()
-                                    CustomToast.show(requireContext(), "Cleared!")
-                                }.setOnDismissListener {
-                                    firstTry = true
-                                    isShowing = false
-                                }.show()
-
-                            it.forEach { savedUser ->
-
-                                val fragmentLoginSavedUserButtonBinding =
-                                    FragmentLoginSavedUserButtonBinding.inflate(layoutInflater)
-
-                                fragmentLoginSavedUserButtonBinding.usernameButton.text =
-                                    savedUser.userName
-
-                                fragmentLoginSavedUsersViewHolderBinding.container.addView(
-                                    fragmentLoginSavedUserButtonBinding.root
-                                )
-
-                                fragmentLoginSavedUserButtonBinding.usernameButton.setOnClickListener {
-                                    binding.username.setText(savedUser.userName)
-                                    binding.password.setText(savedUser.password)
-                                    binding.token.setText(savedUser.token)
-                                    alertDialog.dismiss()
-                                }
-                            }
-
-                        } else if (it.isEmpty() && !firstTry) {
-                            AlertDialog.Builder(requireContext())
-                                .setTitle("Saved Users")
-                                .setMessage("There is no saved users")
-                                .setPositiveButton("OK") { _, _ -> }
-                                .setOnDismissListener {
-                                    isShowing = false
-                                }.show()
-                        }
-                    }
-                }
-            }
-        }
+    private fun createToast(message: String): Toast {
+        return Toast.makeText(
+            requireContext(),
+            message,
+            Toast.LENGTH_SHORT
+        )
     }
-
 
     private fun observers() {
         responseObserver()
@@ -105,11 +72,75 @@ class LoginFragment : Fragment() {
         saveRememberedUsersDatabaseStatusObserver()
     }
 
+    private fun listeners() {
+        loginButtonClickListener()
+        savedUsersListener()
+    }
+
+    private fun savedUsersListener() {
+        binding.savedUsers.setOnClickListener {
+            if (!savedUsersButtonLock.status) {
+                lockButton(savedUsersButtonLock)
+                lifecycleScope.launch {
+                    val users = viewModel.getSavedUsersSuspend()
+
+                    if (users.isNotEmpty()) {
+                        val fragmentLoginSavedUsersViewHolderBinding =
+                            FragmentLoginSavedUsersContainerBinding.inflate(layoutInflater)
+
+                        users.forEach { savedUser ->
+                            val fragmentLoginSavedUserButtonBinding =
+                                FragmentLoginSavedUserButtonBinding.inflate(layoutInflater)
+
+                            fragmentLoginSavedUserButtonBinding.usernameButton.text =
+                                savedUser.userName
+
+                            fragmentLoginSavedUserButtonBinding.usernameButton.setOnClickListener {
+                                binding.username.setText(savedUser.userName)
+                                binding.password.setText(savedUser.password)
+                                binding.token.setText(savedUser.token)
+                                savedUsersAlertDialogIsNotEmpty.dismiss()
+                            }
+
+                            fragmentLoginSavedUsersViewHolderBinding.container.addView(
+                                fragmentLoginSavedUserButtonBinding.root
+                            )
+                        }
+
+                        savedUsersAlertDialogIsNotEmpty
+                            .setTitle("Saved Users")
+                            .setPositiveButton("OK"){                                it.dismiss()
+                            it.dismiss()
+                            }
+                            .setBody(fragmentLoginSavedUsersViewHolderBinding.root)
+                            .setNegativeButton("Clear") {
+                                viewModel.clearSavedUsersData()
+                                clearedToast.show()
+                                it.dismiss()
+                            }.setOnDismiss {
+                                unlockButton(savedUsersButtonLock)
+                            }.showDialog()
+
+                    } else {
+                        savedUsersAlertDialogIsEmpty
+                            .setTitle("Saved Users")
+                            .setMessage("There is no saved users")
+                            .setPositiveButton("OK") {
+                                it.dismiss()
+                            }.setOnDismiss {
+                                unlockButton(savedUsersButtonLock)
+                            }.showDialog()
+                    }
+                }
+            }
+        }
+    }
+
 
     private fun saveRememberedUsersDatabaseStatusObserver() {
         viewModel.saveRememberedUsersDatabaseStatus.observe(viewLifecycleOwner) {
             if (it == false) {
-                CustomToast.show(requireContext(), "Error Occurred")
+                errorOccurredToast.show()
             }
         }
     }
@@ -122,13 +153,12 @@ class LoginFragment : Fragment() {
                         LoginFragmentDirections.actionLoginFragmentToScanFragment()
                     )
                 } else {
-                    AlertDialog.Builder(requireContext())
+                    loginFailedAlertDialog
                         .setMessage(it.body()!!.message)
-                        .setTitle("Login Failed").setPositiveButton(
-                            "OK"
-                        ) { dialogInterface, _ ->
-                            dialogInterface.dismiss()
-                        }.show()
+                        .setTitle("Login Failed")
+                        .setPositiveButton("OK") {
+                            it.dismiss()
+                        }.showDialog()
                 }
             }
         }
@@ -146,7 +176,7 @@ class LoginFragment : Fragment() {
     private fun saveUserDatabaseStatusObserver() {
         viewModel.saveUserDatabaseStatus.observe(viewLifecycleOwner) {
             if (it == false) {
-                CustomToast.show(requireContext(), "Error Occurred")
+                errorOccurredToast.show()
             }
         }
     }
@@ -154,17 +184,29 @@ class LoginFragment : Fragment() {
     private fun connectionStatusObserver() {
         viewModel.connectionStatus.work {
             it?.let {
+                unlockButton(loginButtonLock)
+                binding.progressBar.visibility = View.INVISIBLE
+
                 if (!it) {
-                    AlertDialog.Builder(requireContext())
+                    tokenInternetAlertDialog
                         .setMessage("Please check the token or the internet connection")
                         .setTitle("Login Failed")
-                        .setPositiveButton("OK") { dialogInterface, _ ->
-                            dialogInterface.dismiss()
-                        }.show()
+                        .setPositiveButton("OK") {
+                            it.dismiss()
+                        } .showDialog()
                 }
             }
         }
     }
+
+
+    private fun alertDialogsInitialization() {
+        loginFailedAlertDialog = CustomAlertDialog(requireContext())
+        tokenInternetAlertDialog = CustomAlertDialog(requireContext())
+        savedUsersAlertDialogIsNotEmpty = CustomAlertDialog(requireContext())
+        savedUsersAlertDialogIsEmpty = CustomAlertDialog(requireContext())
+    }
+
 
     private fun loginButtonClickListener() {
         binding.loginButton.setOnClickListener {
@@ -177,14 +219,23 @@ class LoginFragment : Fragment() {
                 password.isNotEmpty() &&
                 token.isNotEmpty()
             ) {
-                try {
+                if (!loginButtonLock.status) {
+                    lockButton(loginButtonLock)
+                    binding.progressBar.visibility = View.VISIBLE
+
                     viewModel.login(username, password, token)
-                } catch (e: Exception) {
-                    CustomToast.show(requireContext(), "Please insert valid token!")
                 }
             } else {
-                CustomToast.show(requireContext(), "Please fill all fields!")
+                fillAllFieldsToast.show()
             }
         }
+    }
+
+    private fun unlockButton(lock: Lock) {
+        lock.status = false
+    }
+
+    private fun lockButton(lock: Lock) {
+        lock.status = true
     }
 }

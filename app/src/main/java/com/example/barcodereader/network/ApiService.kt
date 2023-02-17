@@ -6,11 +6,13 @@ import com.example.barcodereader.network.properties.post.login.LoginRequest
 import com.example.barcodereader.network.properties.post.login.LoginResponse
 import com.example.barcodereader.network.properties.post.saveData.SaveDataRequest
 import com.example.barcodereader.network.properties.post.saveData.SaveDataResponse
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
 
 interface ApiService {
+
     @GET("barcode")
     suspend fun getBarcode(
         @Query("schema") schema: String,

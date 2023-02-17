@@ -12,7 +12,7 @@ import com.example.barcodereader.Arabic
 import com.example.barcodereader.Language
 import com.example.barcodereader.databaes.InventoryItem
 import com.example.barcodereader.databinding.ItemPropertiesViewHolderBinding
-import com.example.barcodereader.fragments.scanFragment.LanguageFactory
+import com.example.barcodereader.fragments.mainMenuFragment.LanguageFactory
 import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CustomList
 
@@ -244,9 +244,6 @@ class InventoryScanAdapter(
                 if (binding.amountEdit.text.toString() == "") binding.amountEdit.setText("0")
                 inventoryScanAdapter.itemsList[position].amount = binding.amountEdit.text.toString()
                 updateButton("#399636", "#ffffff", binding.amountSave, false)
-//                inventoryScanAdapter.itemsList.forEach {
-//                    println(it)
-//                }
             }
 
             binding.numberSave.setOnClickListener {
@@ -272,13 +269,17 @@ class InventoryScanAdapter(
         private fun removeItem(
             position: Int, inventoryScanAdapter: InventoryScanAdapter
         ) {
+            var lock = true
             binding.removeButton.setOnClickListener {
-                inventoryScanAdapter.itemsList.removeAt(position)
-                inventoryScanAdapter.notifyItemRemoved(position)
-                inventoryScanAdapter.notifyItemRangeChanged(
-                    position,
-                    inventoryScanAdapter.itemsList.size
-                )
+                if (lock) {
+                    lock = false
+                    inventoryScanAdapter.itemsList.removeAt(position)
+                    inventoryScanAdapter.notifyItemRemoved(position)
+                    inventoryScanAdapter.notifyItemRangeChanged(
+                        position,
+                        inventoryScanAdapter.itemsList.size
+                    )
+                }
             }
         }
     }

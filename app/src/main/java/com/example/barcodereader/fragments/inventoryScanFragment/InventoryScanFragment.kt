@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.barcodereader.databaes.InventoryItem
 import com.example.barcodereader.databaes.TopSoftwareDatabase
 import com.example.barcodereader.databinding.FragmentInventoryScanBinding
@@ -19,6 +20,8 @@ import com.example.barcodereader.utils.CustomToast
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -161,8 +164,7 @@ class InventoryScanFragment : Fragment() {
         itemsList.sizeLiveData.observe(viewLifecycleOwner) {
             it?.let {
 
-                viewModel.deleteDataDB(args.groupCode, args.pillCode)
-                viewModel.saveDataDB(itemsList)
+                updateDB()
 
                 if (it > 0) binding.dummyText.text = ""
                 else binding.dummyText.text = "List Is Empty."
@@ -171,8 +173,16 @@ class InventoryScanFragment : Fragment() {
         }
     }
 
+    private fun updateDB() {
+        lifecycleScope.launch {
+            delay(50)
+            viewModel.deleteDataDB(args.groupCode, args.pillCode)
+            viewModel.saveDataDB(itemsList)
+        }
+    }
+
     private fun marbleObserver() {
-        viewModel.marble.work { it ->
+        viewModel.marbles.work { it ->
             it?.let {
                 if (it.code() == 200) {
                     val body = it.body()!!
@@ -247,7 +257,6 @@ class InventoryScanFragment : Fragment() {
         viewModel.barcode.work {
             it?.let {
                 val updatedBarcode = makeupBarcode(it)
-
                 marbleObserver()
                 retApiData(updatedBarcode)
             }
@@ -315,7 +324,7 @@ class InventoryScanFragment : Fragment() {
     }
 
     private fun connectionStatusObserver() {
-        viewModel.connectionStatus.observe(viewLifecycleOwner) {
+        viewModel.connectionStatus.work {
             it?.let {
                 if (!it) {
                     AlertDialog.Builder(requireContext())

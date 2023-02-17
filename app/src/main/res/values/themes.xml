@@ -20,5 +20,6 @@
     <style name="ColorPrimaryWhite" parent="@style/Theme.MaterialComponents">
         <item name="colorPrimary">@color/white</item>
         <item name="colorOnSecondary">@color/red</item>
+        <item name="colorSecondary">@color/black</item>
     </style>
 </resources>

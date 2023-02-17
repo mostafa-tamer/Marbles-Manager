@@ -6,19 +6,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.barcodereader.databaes.User
 import com.example.barcodereader.databaes.UserDao
-import com.example.barcodereader.utils.GlobalKeys
+import kotlinx.coroutines.runBlocking
 
 class WelcomeFragmentViewModel(private val dataSource: UserDao) : ViewModel() {
 
     val status = MutableLiveData(true)
 
-    fun retUser(): LiveData< User> ? {
+    fun retUser(): LiveData<User>? {
         return try {
             status.value = true
             dataSource.retUser()
         } catch (e: Exception) {
             status.value = false
             return null
+        }
+    }
+
+    fun retUserSuspend():User?  {
+        return  runBlocking {
+            dataSource.retUserSuspend()
         }
     }
 

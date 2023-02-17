@@ -7,6 +7,7 @@ import androidx.room.*
 
 @Entity
 data class User(
+    val name: String,
     val userName: String,
     val password: String,
     var schema: String,
@@ -100,7 +101,7 @@ interface UserDao {
     fun retUser(): LiveData<User>
 
     @Query("select * from User")
-    suspend fun retUserSuspend(): User
+    suspend fun retUserSuspend(): User?
 
     @Query("delete from User")
     suspend fun logout()

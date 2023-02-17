@@ -30,16 +30,20 @@ class InvoiceFragment : Fragment() {
             fragmentInventoryCardBinding.factoryButton.text =
                 "${pill.nameAr}"
 
+            var lock = false
             fragmentInventoryCardBinding.factoryButton.setOnClickListener {
-                findNavController().navigate(
-                    InvoiceFragmentDirections.actionInvoiceFragmentToScanInventoryFragment(
-                        args.groupName,
-                        args.groupCode,
-                        args.groupMgr,
-                        pill.nameAr,
-                        pill.code
+                if (!lock) {
+                    findNavController().navigate(
+                        InvoiceFragmentDirections.actionInvoiceFragmentToScanInventoryFragment(
+                            args.groupName,
+                            args.groupCode,
+                            args.groupMgr,
+                            pill.nameAr,
+                            pill.code
+                        )
                     )
-                )
+                    lock = true
+                }
             }
             binding.container.addView(fragmentInventoryCardBinding.root)
         }

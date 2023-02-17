@@ -21,7 +21,7 @@ class Api(subBaseURL: String) {
         .addCallAdapterFactory(CoroutineCallAdapterFactory())
         .client(
             OkHttpClient.Builder()
-                .connectTimeout(600, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(600, TimeUnit.SECONDS)
                 .build()
         )

@@ -1,4 +1,4 @@
-package com.example.barcodereader.fragments.scanFragment
+package com.example.barcodereader.fragments.mainMenuFragment
 
 import com.example.barcodereader.Arabic
 import com.example.barcodereader.English

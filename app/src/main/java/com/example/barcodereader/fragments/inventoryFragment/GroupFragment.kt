@@ -32,15 +32,19 @@ class GroupFragment : Fragment() {
             fragmentInventoryCardBinding.factoryButton.text =
                 "${branch.groupName}"
 
+            var lock = false
             fragmentInventoryCardBinding.factoryButton.setOnClickListener {
-                findNavController().navigate(
-                    GroupFragmentDirections.actionInventoryFragmentToInvoiceFragment(
-                        branch.groupName,
-                        branch.groupCode,
-                        branch.groupMgr,
-                        args.group
+                if (!lock) {
+                    findNavController().navigate(
+                        GroupFragmentDirections.actionInventoryFragmentToInvoiceFragment(
+                            branch.groupName,
+                            branch.groupCode,
+                            branch.groupMgr,
+                            args.group
+                        )
                     )
-                )
+                    lock = true
+                }
             }
 
             binding.container.addView(fragmentInventoryCardBinding.root)
