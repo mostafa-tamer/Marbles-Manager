@@ -15,7 +15,7 @@ import com.example.barcodereader.databinding.FragmentScanManualBarcodeViewHolder
 import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CaptureAct
 import com.example.barcodereader.utils.CustomAlertDialog
-import com.example.barcodereader.utils.CustomToast
+
 import com.example.barcodereader.utils.Lock
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
@@ -32,14 +32,14 @@ class MainMenuFragment : Fragment() {
     private val manualButtonLock = Lock()
     private val inventoryButtonLock = Lock()
 
-
     private lateinit var alertDialogConnectionLoading: CustomAlertDialog
     private lateinit var alertDialogManual: CustomAlertDialog
     private lateinit var connectionStatusAlertDialog: CustomAlertDialog
     private lateinit var marblesErrorAlertDialog: CustomAlertDialog
 
 
-    private lateinit var fillAllFields: Toast
+    private lateinit var failToGetDataToast: Toast
+    private lateinit var fillAllFieldsToast: Toast
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -52,30 +52,10 @@ class MainMenuFragment : Fragment() {
         alertDialogInitialization()
         toastInitialization()
 
-
         observers()
         listeners()
 
         return binding.root
-    }
-
-    private fun toastInitialization() {
-        fillAllFields = createToast("Please fill all fields")
-    }
-
-    private fun createToast(message: String): Toast {
-        return Toast.makeText(
-            requireContext(),
-            message,
-            Toast.LENGTH_SHORT
-        )
-    }
-
-    private fun alertDialogInitialization() {
-        alertDialogConnectionLoading = CustomAlertDialog(requireContext())
-        alertDialogManual = CustomAlertDialog(requireContext())
-        connectionStatusAlertDialog = CustomAlertDialog(requireContext())
-        marblesErrorAlertDialog = CustomAlertDialog(requireContext())
     }
 
     private fun listeners() {
@@ -91,6 +71,25 @@ class MainMenuFragment : Fragment() {
         logoutStatusObserver()
         connectionStatusObserver()
         groupsPillObserver()
+    }
+    private fun toastInitialization() {
+        fillAllFieldsToast = createToast("Please fill all fields")
+        failToGetDataToast = createToast("Failed to get Data")
+    }
+
+    private fun createToast(message: String): Toast {
+        return Toast.makeText(
+            requireContext(),
+            message,
+            Toast.LENGTH_SHORT
+        )
+    }
+
+    private fun alertDialogInitialization() {
+        alertDialogConnectionLoading = CustomAlertDialog(requireContext())
+        alertDialogManual = CustomAlertDialog(requireContext())
+        connectionStatusAlertDialog = CustomAlertDialog(requireContext())
+        marblesErrorAlertDialog = CustomAlertDialog(requireContext())
     }
 
     private fun userLoginObserve() {
@@ -122,7 +121,7 @@ class MainMenuFragment : Fragment() {
                         )
                     )
                 } else {
-                    CustomToast.show(requireContext(), "Failed to get Data")
+                    failToGetDataToast.show()
                 }
             }
         }
@@ -210,7 +209,7 @@ class MainMenuFragment : Fragment() {
                             it.dismiss()
                             unLock = false
                         } else {
-                            fillAllFields.show()
+                            fillAllFieldsToast.show()
                         }
                     }.setOnDismiss {
                         if (unLock)

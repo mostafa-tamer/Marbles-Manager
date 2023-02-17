@@ -17,6 +17,7 @@ import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CaptureAct
 import com.example.barcodereader.utils.CustomList
 import com.example.barcodereader.utils.CustomToast
+import com.example.barcodereader.utils.Lock
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
@@ -30,6 +31,9 @@ class InventoryScanFragment : Fragment() {
     private lateinit var binding: FragmentInventoryScanBinding
     private lateinit var viewModel: InventoryScanViewModel
     private lateinit var args: InventoryScanFragmentArgs
+
+    private val cameraButtonLock = Lock()
+    private val manualButtonLock = Lock()
 
     private val itemsList = CustomList<InventoryItem>()
     private lateinit var adapter: InventoryScanAdapter

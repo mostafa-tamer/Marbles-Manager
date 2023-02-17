@@ -146,8 +146,8 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/rounded_button"
                                 android:drawableLeft="@drawable/ic_baseline_login_24"
-                                android:drawableTint="@color/white"
-                                android:text="@string/login"
+                                android:drawableRight="@drawable/ic_baseline_login_red"
+                                android:text="Login"
                                 android:textSize="20dp" />
                         </com.balysv.materialripple.MaterialRippleLayout>
                     </androidx.cardview.widget.CardView>

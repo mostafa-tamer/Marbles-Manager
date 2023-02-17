@@ -17,7 +17,6 @@ class GroupFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentGroupBinding.inflate(layoutInflater)
-
         args = GroupFragmentArgs.fromBundle(requireArguments())
 
         showData()
