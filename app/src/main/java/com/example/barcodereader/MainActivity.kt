@@ -1,12 +1,9 @@
 package com.example.barcodereader
 
-import android.R
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.Fragment
 import com.example.barcodereader.databinding.ActivityMainBinding
-import org.koin.core.component.getScopeName
 
 
 class MainActivity : AppCompatActivity() {
@@ -18,9 +15,5 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
     }
-
-
 }

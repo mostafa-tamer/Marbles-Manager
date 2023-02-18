@@ -79,8 +79,8 @@ class LoginFragment : Fragment() {
 
     private fun savedUsersListener() {
         binding.savedUsers.setOnClickListener {
+
             if (!savedUsersButtonLock.status) {
-                lockButton(savedUsersButtonLock)
                 lifecycleScope.launch {
                     val users = viewModel.getSavedUsersSuspend()
 
@@ -119,8 +119,6 @@ class LoginFragment : Fragment() {
                                 viewModel.clearSavedUsersData()
                                 clearedToast.show()
                                 it.dismiss()
-                            }.setOnDismiss {
-                                unlockButton(savedUsersButtonLock)
                             }.showDialog()
 
                     } else {
@@ -133,6 +131,7 @@ class LoginFragment : Fragment() {
                                 unlockButton(savedUsersButtonLock)
                             }.showDialog()
                     }
+
                 }
             }
         }
@@ -151,6 +150,7 @@ class LoginFragment : Fragment() {
         viewModel.response.work {
             it?.let {
                 if (it.code() == 200) {
+                    savedUsersButtonLock.status = true
                     findNavController().navigate(
                         LoginFragmentDirections.actionLoginFragmentToScanFragment()
                     )

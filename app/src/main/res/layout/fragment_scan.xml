@@ -47,7 +47,7 @@
                 android:layout_marginBottom="20dp"
                 android:backgroundTint="@color/black"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="8dp">
+                app:cardElevation="4dp">
 
                 <com.balysv.materialripple.MaterialRippleLayout
                     style="@style/ripple_style"
@@ -73,7 +73,7 @@
                 android:layout_marginBottom="20dp"
                 android:backgroundTint="@color/black"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="8dp">
+                app:cardElevation="4dp">
 
                 <com.balysv.materialripple.MaterialRippleLayout
                     style="@style/ripple_style"
@@ -99,7 +99,7 @@
                 android:layout_marginBottom="20dp"
                 android:backgroundTint="@color/black"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="8dp">
+                app:cardElevation="4dp">
 
                 <com.balysv.materialripple.MaterialRippleLayout
                     style="@style/ripple_style"
@@ -123,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="8dp">
+                app:cardElevation="4dp">
 
                 <com.balysv.materialripple.MaterialRippleLayout
                     style="@style/ripple_style"

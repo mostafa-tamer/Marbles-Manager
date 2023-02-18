@@ -36,6 +36,8 @@ class LoginFragmentViewModel(
     private lateinit var password: String
     private lateinit var token: String
 
+
+
     suspend fun getSavedUsersSuspend() = savedUsersDao.retUsersSuspend()
 
     fun login(
@@ -95,7 +97,6 @@ class LoginFragmentViewModel(
             )
             true
         } catch (e: Exception) {
-            println(e.message)
             false
         }
     }

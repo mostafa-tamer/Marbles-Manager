@@ -8,8 +8,6 @@ import com.example.barcodereader.databaes.UserDao
 import com.example.barcodereader.fragments.viewModels.ScanViewModel
 import com.example.barcodereader.network.Api
 import com.example.barcodereader.network.properties.get.groups.Groups
-import com.example.barcodereader.network.properties.post.login.LoginRequest
-import com.example.barcodereader.network.properties.post.login.LoginResponse
 import com.example.barcodereader.userData
 import com.example.barcodereader.utils.Observable
 import kotlinx.coroutines.launch
@@ -37,19 +35,24 @@ class MainMenuViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
             try {
                 val api = Api(userData.subBaseURL)
 
-                println(userData)
-
-                groups.setValue(
-                    api.call.getBranches(
-                        userData.schema,
-                        userData.loginCount,
-                        userData.employeeNumber
-                    )
+                val response = api.call.getBranches(
+                    userData.schema,
+                    userData.loginCount,
+                    userData.employeeNumber
                 )
+
+                if (response.isSuccessful) {
+                    groups.setValue(
+                        response
+                    )
+                } else {
+                    throw Exception("Network call failed with error code " + response.code())
+                }
 
                 connectionStatus.setValue(true)
             } catch (e: Exception) {
                 connectionStatus.setValue(false)
+                println(e.message)
             }
         }
     }

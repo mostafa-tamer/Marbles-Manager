@@ -1,3 +1,4 @@
+
 package com.example.barcodereader.fragments.inventoryScanFragment
 
 import AESEncryption
@@ -16,8 +17,6 @@ import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CustomList
 import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -26,7 +25,7 @@ class InventoryScanViewModel(
     private val inventoryItemDao: InventoryItemDao
 ) : ScanViewModel(userDao) {
 
-    val saveDataResponse = Observable<Response<SaveDataResponse>>()
+    val sentDataResponse = Observable<Response<SaveDataResponse>>()
 
     fun saveDataDB(inventoryItems: List<InventoryItem>) {
         viewModelScope.launch {
@@ -42,8 +41,6 @@ class InventoryScanViewModel(
 
     fun retData(groupCode: String, pillCode: String) =
         inventoryItemDao.retItems(groupCode, pillCode, userData.employeeNumber)
-
-    fun getTableCount() = inventoryItemDao.getTableCount()
 
     fun sendData(
         itemsList: CustomList<InventoryItem>,
@@ -87,113 +84,13 @@ class InventoryScanViewModel(
                     AESEncryption.decrypt(schema, GlobalKeys.KEY)
                 )
 
-//                CoroutineScope(Dispatchers.IO).launch {
-//                    println(
-//
-//                        api.call.sendData(
-//                                saveDataRequest,
-//                                userData.loginCount,
-//                                userData.employeeNumber
-//                            )
-//
-//                    )
-//                }
-////
-//                CoroutineScope(Dispatchers.IO).launch {
-//                    println(
-//
-//                            api.call.sendData(
-//                                saveDataRequest,
-//                                userData.loginCount,
-//                                userData.employeeNumber
-//                            )
-//
-//                    )
-//                }
-//
-                CoroutineScope(Dispatchers.IO).launch {
-                    println(
-
-                            api.call.sendData(
-                                saveDataRequest,
-                                userData.loginCount,
-                                userData.employeeNumber
-
-                        )
+                sentDataResponse.setValue(
+                    api.call.sendData(
+                        saveDataRequest,
+                        userData.loginCount,
+                        userData.employeeNumber
                     )
-                }
-//
-                CoroutineScope(Dispatchers.IO).launch {
-                    println(
-
-                            api.call.sendData(
-                                saveDataRequest,
-                                927,
-                                "2"
-                            )
-                        )
-
-                }
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    println(
-
-                            api.call.sendData(
-                                saveDataRequest,
-                                219,
-                                "4"
-                            )
-
-                    )
-                }
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    println(
-
-                            api.call.sendData(
-                                saveDataRequest,
-                                301,
-                                "5"
-                            )
-
-                    )
-                }
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    println(
-
-                            api.call.sendData(
-                                saveDataRequest,
-                                288,
-                                "6"
-
-                        )
-                    )
-                }
-//
-                CoroutineScope(Dispatchers.IO).launch {
-                    println(
-
-                            api.call.sendData(
-                                saveDataRequest,
-                                82,
-                                "7"
-                            )
-
-                    )
-                }
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    println(
-
-                            api.call.sendData(
-                                saveDataRequest,
-                                111,
-                                "8"
-                            )
-                        )
-
-                }
+                )
 
                 connectionStatus.setValue(true)
             } catch (e: Exception) {

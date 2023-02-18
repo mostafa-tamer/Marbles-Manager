@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.barcodereader.databaes.TopSoftwareDatabase
 import com.example.barcodereader.databinding.FragmentScanBinding
@@ -18,6 +19,8 @@ import com.example.barcodereader.utils.CustomAlertDialog
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class MainMenuFragment : Fragment() {
@@ -103,12 +106,12 @@ class MainMenuFragment : Fragment() {
 
     private fun spinnerVisible() {
         binding.progressBar.visibility = View.VISIBLE
-        visibleSpinner.value = 0
+        visibleSpinner.setValue(0)
     }
 
     private fun spinnerInvisible() {
         binding.progressBar.visibility = View.INVISIBLE
-        visibleSpinner.value = 4
+        visibleSpinner.setValue(4)
     }
 
     private fun lockButtons() {
@@ -135,7 +138,6 @@ class MainMenuFragment : Fragment() {
     private fun groupsPillObserver() {
         viewModel.groups.work {
             it?.let { response ->
-                println(response)
                 if (response.code() == 200) {
                     findNavController().navigate(
                         MainMenuFragmentDirections.actionScanFragmentToInventoryFragment(
@@ -150,7 +152,11 @@ class MainMenuFragment : Fragment() {
                             it.dismiss()
                         }.showDialog()
                 }
-                spinnerInvisible()
+
+                lifecycleScope.launch {
+                    delay(200)
+                    spinnerInvisible()
+                }
             }
         }
     }
@@ -173,7 +179,10 @@ class MainMenuFragment : Fragment() {
                             it.dismiss()
                         }.showDialog()
                 }
-                spinnerInvisible()
+                lifecycleScope.launch {
+                    delay(200)
+                    spinnerInvisible()
+                }
             }
         }
     }
@@ -203,7 +212,7 @@ class MainMenuFragment : Fragment() {
                 .setBody(manualBarcodeViewHolderBinding.root)
                 .setTitle("Barcode").setNegativeButton("Cancel")
                 .setPositiveButton("Ok") {
-                    if (visibleSpinner.value!! == 4) {
+                    if (visibleSpinner.getValue()!! == 4) {
                         if (manualBarcodeViewHolderBinding.barcode.text.toString().isNotEmpty()) {
                             it.dismiss()
                             viewModel.barcode.setValue(manualBarcodeViewHolderBinding.barcode.text.toString())
@@ -303,6 +312,12 @@ class MainMenuFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (visibleSpinner.getValue()!! == 4) {
+            unlockButtons()
+        }
+    }
 
     override fun onStop() {
         manualAlertDialog.dismiss()

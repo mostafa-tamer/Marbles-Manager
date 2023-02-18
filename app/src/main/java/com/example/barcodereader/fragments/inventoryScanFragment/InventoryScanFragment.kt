@@ -67,8 +67,6 @@ class InventoryScanFragment : Fragment() {
         binding.groupName.text = "${args.groupName}"
         binding.pillName.text = "${args.pillName}"
 
-
-
         listeners()
         observers()
 
@@ -235,7 +233,7 @@ class InventoryScanFragment : Fragment() {
     }
 
     private fun sentDataResponseObserver() {
-        viewModel.saveDataResponse.work {
+        viewModel.sentDataResponse.work {
             it?.let {
                 internetConnectionAlertDialog
                     .setTitle("Info")
@@ -244,7 +242,8 @@ class InventoryScanFragment : Fragment() {
                         it.dismiss()
                     }.showDialog()
 
-                itemsList.clear()
+                if (it.code() == 200)
+                    itemsList.clear()
                 adapter.notifyItemRangeChanged(
                     0,
                     itemsList.size
@@ -361,14 +360,13 @@ class InventoryScanFragment : Fragment() {
                             userData.employeeNumber
                         )
 
-                        for (i in 0..100) {
-                            itemsList.add(
-                                inventoryItem
-                            )
+                        itemsList.add(
+                            inventoryItem
+                        )
 
-                            adapter.notifyItemInserted(itemsList.size - 1)
-                            binding.container.layoutManager?.scrollToPosition(itemsList.size - 1)
-                        }
+                        adapter.notifyItemInserted(itemsList.size - 1)
+                        binding.container.layoutManager?.scrollToPosition(itemsList.size - 1)
+
                     } else {
                         itemNotFoundToast.show()
                     }
@@ -490,5 +488,10 @@ class InventoryScanFragment : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        manualAlertDialog.dismiss()
+        super.onStop()
     }
 }
