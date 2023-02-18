@@ -46,7 +46,7 @@
 
     <style name="text_view_linear_layout_card_view_fragment_result">
         <item name="android:layout_width">0dp</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">15dp</item>
         <item name="android:paddingLeft">3dp</item>
         <item name="android:paddingRight">3dp</item>
         <item name="android:textStyle">bold</item>

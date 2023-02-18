@@ -16,6 +16,8 @@ import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CustomList
 import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -85,17 +87,118 @@ class InventoryScanViewModel(
                     AESEncryption.decrypt(schema, GlobalKeys.KEY)
                 )
 
-                saveDataResponse.setValue(
-                    api.call.sendData(
-                        saveDataRequest,
-                        userData.loginCount,
-                        userData.employeeNumber
+//                CoroutineScope(Dispatchers.IO).launch {
+//                    println(
+//
+//                        api.call.sendData(
+//                                saveDataRequest,
+//                                userData.loginCount,
+//                                userData.employeeNumber
+//                            )
+//
+//                    )
+//                }
+////
+//                CoroutineScope(Dispatchers.IO).launch {
+//                    println(
+//
+//                            api.call.sendData(
+//                                saveDataRequest,
+//                                userData.loginCount,
+//                                userData.employeeNumber
+//                            )
+//
+//                    )
+//                }
+//
+                CoroutineScope(Dispatchers.IO).launch {
+                    println(
+
+                            api.call.sendData(
+                                saveDataRequest,
+                                userData.loginCount,
+                                userData.employeeNumber
+
+                        )
                     )
-                )
-                connectionStatus.setValue(false)
+                }
+//
+                CoroutineScope(Dispatchers.IO).launch {
+                    println(
+
+                            api.call.sendData(
+                                saveDataRequest,
+                                927,
+                                "2"
+                            )
+                        )
+
+                }
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    println(
+
+                            api.call.sendData(
+                                saveDataRequest,
+                                219,
+                                "4"
+                            )
+
+                    )
+                }
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    println(
+
+                            api.call.sendData(
+                                saveDataRequest,
+                                301,
+                                "5"
+                            )
+
+                    )
+                }
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    println(
+
+                            api.call.sendData(
+                                saveDataRequest,
+                                288,
+                                "6"
+
+                        )
+                    )
+                }
+//
+                CoroutineScope(Dispatchers.IO).launch {
+                    println(
+
+                            api.call.sendData(
+                                saveDataRequest,
+                                82,
+                                "7"
+                            )
+
+                    )
+                }
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    println(
+
+                            api.call.sendData(
+                                saveDataRequest,
+                                111,
+                                "8"
+                            )
+                        )
+
+                }
+
+                connectionStatus.setValue(true)
             } catch (e: Exception) {
                 connectionStatus.setValue(false)
-
+                println(e.message)
             }
         }
     }

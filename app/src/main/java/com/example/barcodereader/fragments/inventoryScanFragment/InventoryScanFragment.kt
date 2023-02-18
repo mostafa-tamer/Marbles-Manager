@@ -13,6 +13,7 @@ import com.example.barcodereader.databaes.InventoryItem
 import com.example.barcodereader.databaes.TopSoftwareDatabase
 import com.example.barcodereader.databinding.FragmentInventoryScanBinding
 import com.example.barcodereader.databinding.FragmentScanManualBarcodeViewHolderBinding
+import com.example.barcodereader.network.properties.get.marble.Data
 import com.example.barcodereader.network.properties.get.marble.Table
 import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CaptureAct
@@ -274,6 +275,64 @@ class InventoryScanFragment : Fragment() {
         }
     }
 
+    private fun nameFilter(data: Data): String {
+        return when (userData.loginLanguage) {
+            "ar" -> {
+                data.itemName
+            }
+            "en" -> {
+                data.itemNameLanguages.En
+            }
+            "de" -> {
+                data.itemNameLanguages.De
+            }
+            "es" -> {
+                data.itemNameLanguages.Es
+            }
+            "fr" -> {
+                data.itemNameLanguages.Fr
+            }
+            "it" -> {
+                data.itemNameLanguages.It
+            }
+            "ru" -> {
+                data.itemNameLanguages.Ru
+            }
+            else -> {
+                data.itemNameLanguages.Tr
+            }
+        }
+    }
+
+    private fun uniteFilter(data: Data): String {
+        return when (userData.loginLanguage) {
+            "ar" -> {
+                data.unit
+            }
+            "en" -> {
+                data.unitLanguages.En
+            }
+            "de" -> {
+                data.unitLanguages.De
+            }
+            "es" -> {
+                data.unitLanguages.Es
+            }
+            "fr" -> {
+                data.unitLanguages.Fr
+            }
+            "it" -> {
+                data.unitLanguages.It
+            }
+            "ru" -> {
+                data.unitLanguages.Ru
+            }
+            else -> {
+                data.unitLanguages.Tr
+            }
+        }
+    }
+
     private fun marbleObserver() {
         viewModel.marbles.work { it ->
             it?.let {
@@ -287,12 +346,12 @@ class InventoryScanFragment : Fragment() {
 
                         val inventoryItem = InventoryItem(
                             data.itemCode,
-                            data.itemName,
+                            nameFilter(data),
                             data.blockNumber,
                             table.amount,
                             table.number,
                             data.frz,
-                            data.unit,
+                            uniteFilter(data),
                             data.unitCode,
                             data.zdimension,
                             data.xdimension,

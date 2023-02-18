@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.barcodereader.databinding.FragmentInventoryCardsBinding
 import com.example.barcodereader.databinding.FragmentInvoiceBinding
+import com.example.barcodereader.network.properties.get.groups.PillType
+import com.example.barcodereader.userData
 
 class InvoiceFragment : Fragment() {
 
@@ -31,7 +33,7 @@ class InvoiceFragment : Fragment() {
             val fragmentInventoryCardBinding =
                 FragmentInventoryCardsBinding.inflate(layoutInflater)
             fragmentInventoryCardBinding.factoryButton.text =
-                "${pill.nameAr}"
+                pillNameLanguage(pill)
             fragmentInventoryCardBinding.factoryButton.setOnClickListener {
                 if (!lock) {
                     lock = true
@@ -40,13 +42,43 @@ class InvoiceFragment : Fragment() {
                             args.groupName,
                             args.groupCode,
                             args.groupMgr,
-                            pill.nameAr,
+                            pillNameLanguage(pill),
                             pill.code
                         )
                     )
                 }
             }
             binding.container.addView(fragmentInventoryCardBinding.root)
+        }
+    }
+
+    private fun pillNameLanguage(pillType: PillType): String {
+
+        return when (userData.loginLanguage) {
+            "ar" -> {
+                pillType.nameAr
+            }
+            "en" -> {
+                pillType.nameEn
+            }
+            "de" -> {
+                pillType.nameDe
+            }
+            "es" -> {
+                pillType.nameEs
+            }
+            "fr" -> {
+                pillType.nameFr
+            }
+            "it" -> {
+                pillType.nameIt
+            }
+            "ru" -> {
+                pillType.nameRu
+            }
+            else -> {
+                pillType.nameTr
+            }
         }
     }
 
