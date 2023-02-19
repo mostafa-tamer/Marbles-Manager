@@ -1,6 +1,6 @@
 package com.example.barcodereader.fragments.loginFragment
 
-import AESEncryption
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,7 +13,6 @@ import com.example.barcodereader.network.Api
 import com.example.barcodereader.network.properties.post.login.LoginRequest
 import com.example.barcodereader.network.properties.post.login.LoginResponse
 import com.example.barcodereader.userData
-import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
 import com.example.barcodereader.utils.TokenDecrypt
 import kotlinx.coroutines.launch
@@ -37,7 +36,6 @@ class LoginFragmentViewModel(
     private lateinit var token: String
 
 
-
     suspend fun getSavedUsersSuspend() = savedUsersDao.retUsersSuspend()
 
     fun login(
@@ -58,9 +56,9 @@ class LoginFragmentViewModel(
                 val api = Api(subBaseURL)
                 val loginRequest =
                     LoginRequest(
-                        AESEncryption.encrypt(username, GlobalKeys.KEY),
-                        AESEncryption.encrypt(password, GlobalKeys.KEY),
-                        AESEncryption.encrypt(schema, GlobalKeys.KEY)
+                        username,
+                        password,
+                        schema
                     )
 
                 response.setValue(api.call.login(loginRequest))

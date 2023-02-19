@@ -41,10 +41,13 @@ class MainMenuViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
                     userData.employeeNumber
                 )
 
-                groupsPills.setValue(
-                    response
-                )
-
+                if (response.isSuccessful) {
+                    groupsPills.setValue(
+                        response
+                    )
+                } else {
+                    throw Exception("Error Occurred: " + response.code())
+                }
                 connectionStatus.setValue(true)
             } catch (e: Exception) {
                 connectionStatus.setValue(false)

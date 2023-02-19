@@ -130,8 +130,8 @@ class MainMenuFragment : Fragment() {
 
     private fun inventoryButtonListener() {
         binding.inventory.setOnClickListener {
-            viewModel.branchesPills()
             spinnerVisible()
+            viewModel.branchesPills()
         }
     }
 

@@ -15,7 +15,6 @@ object TokenDecrypt {
         'z' to '.'
     )
 
-    //jbdzjifzjbjzjhdxfafcxjc
     fun decrypt(token: String): Pair<String, String> {
         val (ip, port, schema) = token.split("x")
         var decryptedSchema = String()

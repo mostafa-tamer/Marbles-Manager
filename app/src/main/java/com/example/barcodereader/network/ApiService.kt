@@ -34,7 +34,6 @@ interface ApiService {
     ): Response<LoginResponse>
 
     @POST("save")
-
     @Headers("Content-Type: application/json")
     suspend fun sendData(
         @Body loginRequest: SaveDataRequest,

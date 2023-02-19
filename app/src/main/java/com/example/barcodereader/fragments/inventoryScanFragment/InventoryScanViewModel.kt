@@ -1,7 +1,6 @@
-
 package com.example.barcodereader.fragments.inventoryScanFragment
 
-import AESEncryption
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -15,7 +14,6 @@ import com.example.barcodereader.network.properties.post.saveData.SaveDataRespon
 import com.example.barcodereader.network.properties.post.saveData.SavedItems
 import com.example.barcodereader.userData
 import com.example.barcodereader.utils.CustomList
-import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
 import kotlinx.coroutines.launch
 import retrofit2.Response
@@ -81,7 +79,7 @@ class InventoryScanViewModel(
                     pillName,
                     pillCode,
                     convertedList,
-                    AESEncryption.decrypt(schema, GlobalKeys.KEY)
+                    schema
                 )
 
                 sentDataResponse.setValue(

@@ -1,13 +1,12 @@
 package com.example.barcodereader.fragments.viewModels
 
-import AESEncryption
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.barcodereader.databaes.UserDao
 import com.example.barcodereader.network.Api
 import com.example.barcodereader.network.properties.get.marble.Marble
 import com.example.barcodereader.userData
-import com.example.barcodereader.utils.GlobalKeys
 import com.example.barcodereader.utils.Observable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,15 +23,12 @@ abstract class ScanViewModel(private val dataSource: UserDao) : ViewModel() {
 
     fun retRetrofitData(schema: String, barcode: String, loginCount: Int, employeeNo: String) {
 
-        val encryptedBarcode = AESEncryption.encrypt(barcode, GlobalKeys.KEY)
-        val encryptedEmployeeNumber = AESEncryption.encrypt(employeeNo, GlobalKeys.KEY)
-
         viewModelScope.launch {
             try {
                 withContext(Dispatchers.IO) {
                     val api = Api(userData.subBaseURL)
                     val response = api.call.getBarcode(
-                        schema, encryptedBarcode, loginCount, encryptedEmployeeNumber
+                        schema, barcode, loginCount, employeeNo
                     )
 
                     withContext(Dispatchers.Main) {

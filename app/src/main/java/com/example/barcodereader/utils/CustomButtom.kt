@@ -2,11 +2,9 @@ package com.example.barcodereader.utils
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.Button
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.lifecycle.MutableLiveData
-import java.util.concurrent.atomic.AtomicBoolean
 
 
 class CustomButton @JvmOverloads constructor(
