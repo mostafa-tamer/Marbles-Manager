@@ -136,7 +136,7 @@ class MainMenuFragment : Fragment() {
     }
 
     private fun groupsPillObserver() {
-        viewModel.groups.work {
+        viewModel.groupsPills.work {
             it?.let { response ->
                 if (response.code() == 200) {
                     findNavController().navigate(

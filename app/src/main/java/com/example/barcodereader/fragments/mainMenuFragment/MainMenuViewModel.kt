@@ -17,7 +17,7 @@ class MainMenuViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
 
     val logoutStatus = Observable(true)
     val loginStatus = MutableLiveData(true)
-    var groups = Observable<Response<Groups>>()
+    var groupsPills = Observable<Response<Groups>>()
 
     fun logout() {
         viewModelScope.launch {
@@ -41,13 +41,9 @@ class MainMenuViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
                     userData.employeeNumber
                 )
 
-                if (response.isSuccessful) {
-                    groups.setValue(
-                        response
-                    )
-                } else {
-                    throw Exception("Network call failed with error code " + response.code())
-                }
+                groupsPills.setValue(
+                    response
+                )
 
                 connectionStatus.setValue(true)
             } catch (e: Exception) {

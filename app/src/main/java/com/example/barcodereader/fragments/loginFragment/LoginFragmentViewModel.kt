@@ -51,7 +51,6 @@ class LoginFragmentViewModel(
 
         viewModelScope.launch {
             try {
-
                 val pair = TokenDecrypt.decrypt(token)
                 val subBaseURL = pair.first
                 val schema = pair.second
@@ -118,6 +117,8 @@ class LoginFragmentViewModel(
         )
 
         userData = user
+
+        println(userData)
 
         return try {
             userDao.insertUser(user)
