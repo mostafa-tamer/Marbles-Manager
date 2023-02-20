@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.example.barcodereader.fragments.welcomeFragment.WelcomeFragment"
+        android:name="com.example.barcodeReader.fragments.welcomeFragment.WelcomeFragment"
         android:label="fragment_welcome"
         tools:layout="@layout/fragment_welcome">
         <action
@@ -23,7 +23,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.barcodereader.fragments.loginFragment.LoginFragment"
+        android:name="com.example.barcodeReader.fragments.loginFragment.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login">
         <action
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/scanFragment"
-        android:name="com.example.barcodereader.fragments.mainMenuFragment.MainMenuFragment"
+        android:name="com.example.barcodeReader.fragments.mainMenuFragment.MainMenuFragment"
         android:label="fragment_scan"
         tools:layout="@layout/fragment_scan">
         <action
@@ -53,13 +53,13 @@
 
     <fragment
         android:id="@+id/resultFragment"
-        android:name="com.example.barcodereader.fragments.resultFragment.ResultFragment"
+        android:name="com.example.barcodeReader.fragments.resultFragment.ResultFragment"
         android:label="fragment_result"
         tools:layout="@layout/fragment_result">
 
         <argument
-            android:name="data"
-            app:argType="com.example.barcodereader.network.properties.get.marble.Data" />
+            android:name="metaData"
+            app:argType="com.example.barcodeReader.network.properties.get.marble.MetaData" />
 
         <argument
             android:name="language_string"
@@ -67,7 +67,7 @@
     </fragment>
     <fragment
         android:id="@+id/inventoryFragment"
-        android:name="com.example.barcodereader.fragments.inventoryFragment.GroupFragment"
+        android:name="com.example.barcodeReader.fragments.inventoryFragment.GroupFragment"
         android:label="fragment_inventory"
         tools:layout="@layout/fragment_group">
         <action
@@ -75,12 +75,12 @@
             app:destination="@id/invoiceFragment" />
 
         <argument
-            android:name="group"
-            app:argType="com.example.barcodereader.network.properties.get.groups.Group" />
+            android:name="metaData"
+            app:argType="com.example.barcodeReader.network.properties.get.groups.MetaData" />
     </fragment>
     <fragment
         android:id="@+id/scanInventoryFragment"
-        android:name="com.example.barcodereader.fragments.inventoryScanFragment.InventoryScanFragment"
+        android:name="com.example.barcodeReader.fragments.inventoryScanFragment.InventoryScanFragment"
         android:label="fragment_scan_inventory"
         tools:layout="@layout/fragment_inventory_scan">
         <argument
@@ -101,7 +101,7 @@
     </fragment>
     <fragment
         android:id="@+id/invoiceFragment"
-        android:name="com.example.barcodereader.fragments.invoiceFragment.InvoiceFragment"
+        android:name="com.example.barcodeReader.fragments.invoiceFragment.InvoiceFragment"
         android:label="fragment_invoice"
         tools:layout="@layout/fragment_invoice">
         <argument
@@ -114,8 +114,8 @@
             android:name="groupMgr"
             app:argType="string" />
         <argument
-            android:name="group"
-            app:argType="com.example.barcodereader.network.properties.get.groups.Group" />
+            android:name="metaData"
+            app:argType="com.example.barcodeReader.network.properties.get.groups.MetaData" />
         <action
             android:id="@+id/action_invoiceFragment_to_scanInventoryFragment"
             app:destination="@id/scanInventoryFragment" />

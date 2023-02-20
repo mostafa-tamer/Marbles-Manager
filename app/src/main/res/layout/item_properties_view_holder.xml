@@ -8,11 +8,11 @@
 
         <variable
             name="inventoryItem"
-            type="com.example.barcodereader.databaes.InventoryItem" />
+            type="com.example.barcodeReader.databaes.InventoryItem" />
 
         <variable
             name="language"
-            type="com.example.barcodereader.Language" />
+            type="com.example.barcodeReader.Language" />
     </data>
 
     <LinearLayout

@@ -5,7 +5,7 @@
 
         <variable
             name="table"
-            type="com.example.barcodereader.network.properties.get.marble.Table" />
+            type="com.example.barcodeReader.network.properties.get.marble.Table" />
     </data>
 
 

@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.example.barcodereader",
+  "applicationId": "com.example.barcodeReader",
   "variantName": "release",
   "elements": [
     {

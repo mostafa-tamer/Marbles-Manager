@@ -54,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.example.barcodereader.utils.CustomButton
+                    <com.example.barcodeReader.utils.CustomButton
                         android:id="@+id/inventory"
                         android:layout_width="200dp"
                         android:layout_height="110dp"
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.example.barcodereader.utils.CustomButton
+                    <com.example.barcodeReader.utils.CustomButton
                         android:id="@+id/scan_button_camera"
                         android:layout_width="200dp"
                         android:layout_height="110dp"
@@ -106,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.example.barcodereader.utils.CustomButton
+                    <com.example.barcodeReader.utils.CustomButton
                         android:id="@+id/scan_button_manual"
                         android:layout_width="200dp"
                         android:layout_height="110dp"
@@ -130,7 +130,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.example.barcodereader.utils.CustomButton
+                    <com.example.barcodeReader.utils.CustomButton
                         android:id="@+id/logout_button"
                         android:layout_width="200dp"
                         android:layout_height="110dp"

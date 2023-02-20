@@ -102,8 +102,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_gravity="center"
+                        android:backgroundTint="@color/red"
                         app:cardCornerRadius="25dp"
-                        app:cardElevation="2dp">
+                        app:cardElevation="3dp">
 
                         <com.balysv.materialripple.MaterialRippleLayout
                             style="@style/ripple_style"
@@ -111,13 +112,17 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center">
 
-                            <Button
+                            <com.example.barcodeReader.utils.CustomButton
                                 android:id="@+id/saved_users"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
+                                android:layout_height="40dp"
                                 android:background="@drawable/rounded_button"
                                 android:drawableTint="@color/white"
+                                android:gravity="center"
+                                android:paddingLeft="20dp"
+                                android:paddingRight="20dp"
                                 android:text="Saved Users"
+                                android:textColor="@color/white"
                                 android:textSize="15dp" />
                         </com.balysv.materialripple.MaterialRippleLayout>
                     </androidx.cardview.widget.CardView>
@@ -140,14 +145,21 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
-                            <Button
+                            <com.example.barcodeReader.utils.CustomButton
                                 android:id="@+id/login_button"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/rounded_button"
+                                android:backgroundTint="@color/red"
                                 android:drawableLeft="@drawable/ic_baseline_login_24"
                                 android:drawableRight="@drawable/ic_baseline_login_red"
+                                android:gravity="center"
+                                android:paddingLeft="15dp"
+                                android:paddingTop="10dp"
+                                android:paddingRight="15dp"
+                                android:paddingBottom="10dp"
                                 android:text="Login"
+                                android:textColor="@color/white"
                                 android:textSize="20dp" />
                         </com.balysv.materialripple.MaterialRippleLayout>
                     </androidx.cardview.widget.CardView>
