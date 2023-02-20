@@ -96,8 +96,7 @@
                     android:background="@drawable/rounded_button"
                     android:backgroundTint="@color/red"
                     android:padding="8dp"
-                    android:src="@drawable/ic_baseline_delete_24"
-                      />
+                    android:src="@drawable/ic_baseline_delete_24" />
             </com.balysv.materialripple.MaterialRippleLayout>
         </androidx.cardview.widget.CardView>
 

@@ -235,6 +235,9 @@ class InventoryScanFragment : Fragment() {
     private fun sentDataResponseObserver() {
         viewModel.sentDataResponse.work {
             it?.let {
+
+//                println(it.code())
+
                 internetConnectionAlertDialog
                     .setTitle("Info")
                     .setMessage(it.body()!!.message)

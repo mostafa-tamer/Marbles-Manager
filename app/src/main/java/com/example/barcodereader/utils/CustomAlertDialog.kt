@@ -48,25 +48,30 @@ class CustomAlertDialog(private val context: Context) {
     }
 
     fun setPositiveButton(
-        text: String,
+        text: String, cancelable: Boolean = true,
         function: (CustomAlertDialog) -> Unit = {}
     ): CustomAlertDialog {
         layout.okButton.visibility = View.VISIBLE
         layout.okButton.text = text
         layout.okButton.setOnClickListener {
             function(this)
+            if (cancelable)
+                this.dismiss()
+
         }
         return this
     }
 
     fun setNegativeButton(
-        text: String,
+        text: String, cancelable: Boolean = true,
         function: (CustomAlertDialog) -> Unit = {}
     ): CustomAlertDialog {
         layout.cancelButton.visibility = View.VISIBLE
         layout.cancelButton.text = text
         layout.cancelButton.setOnClickListener {
             function(this)
+            if (cancelable)
+                this.dismiss()
         }
         return this
     }

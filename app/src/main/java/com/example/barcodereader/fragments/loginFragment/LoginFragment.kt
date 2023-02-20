@@ -9,12 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.barcodereader.R
 import com.example.barcodereader.databaes.TopSoftwareDatabase
 import com.example.barcodereader.databinding.FragmentLoginBinding
 import com.example.barcodereader.databinding.FragmentLoginSavedUserButtonBinding
 import com.example.barcodereader.databinding.FragmentLoginSavedUsersContainerBinding
 import com.example.barcodereader.utils.CustomAlertDialog
-import com.example.barcodereader.utils.Lock
 import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
@@ -31,8 +31,7 @@ class LoginFragment : Fragment() {
     private lateinit var clearedToast: Toast
     private lateinit var errorOccurredToast: Toast
 
-    private var loginButtonLock = Lock()
-    private var savedUsersButtonLock = Lock()
+    private var isNavigating = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -67,6 +66,7 @@ class LoginFragment : Fragment() {
 
     private fun observers() {
         responseObserver()
+        isNetworkBusyObserver()
         connectionStatusObserver()
         saveUserDatabaseStatusObserver()
         saveRememberedUsersDatabaseStatusObserver()
@@ -77,17 +77,26 @@ class LoginFragment : Fragment() {
         savedUsersListener()
     }
 
+
+    private fun isNetworkBusyObserver() {
+        viewModel.isBusy.observe(viewLifecycleOwner) {
+            if (it == false) {
+                binding.progressBar.visibility = View.INVISIBLE
+            } else {
+                binding.progressBar.visibility = View.VISIBLE
+            }
+        }
+    }
+
     private fun savedUsersListener() {
         binding.savedUsers.setOnClickListener {
-
-            if (!savedUsersButtonLock.status) {
+            if (!isNavigating) {
                 lifecycleScope.launch {
                     val users = viewModel.getSavedUsersSuspend()
 
                     if (users.isNotEmpty()) {
                         val fragmentLoginSavedUsersViewHolderBinding =
                             FragmentLoginSavedUsersContainerBinding.inflate(layoutInflater)
-
 
                         users.forEach { savedUser ->
                             val fragmentLoginSavedUserButtonBinding =
@@ -127,16 +136,12 @@ class LoginFragment : Fragment() {
                             .setMessage("There is no saved users")
                             .setPositiveButton("OK") {
                                 it.dismiss()
-                            }.setOnDismiss {
-                                unlockButton(savedUsersButtonLock)
                             }.showDialog()
                     }
-
                 }
             }
         }
     }
-
 
     private fun saveRememberedUsersDatabaseStatusObserver() {
         viewModel.saveRememberedUsersDatabaseStatus.observe(viewLifecycleOwner) {
@@ -147,10 +152,10 @@ class LoginFragment : Fragment() {
     }
 
     private fun responseObserver() {
-        viewModel.response.work {
+        viewModel.loginResponse.work {
             it?.let {
                 if (it.code() == 200) {
-                    savedUsersButtonLock.status = true
+                    isNavigating = true
                     findNavController().navigate(
                         LoginFragmentDirections.actionLoginFragmentToScanFragment()
                     )
@@ -158,7 +163,7 @@ class LoginFragment : Fragment() {
                     loginFailedAlertDialog
                         .setMessage(it.body()!!.message)
                         .setTitle("Login Failed")
-                        .setPositiveButton("OK") {
+                        .setPositiveButton(getString(R.string.ok)) {
                             it.dismiss()
                         }.showDialog()
                 }
@@ -185,11 +190,8 @@ class LoginFragment : Fragment() {
 
     private fun connectionStatusObserver() {
         viewModel.connectionStatus.work {
-            it?.let {
-                unlockButton(loginButtonLock)
-                binding.progressBar.visibility = View.INVISIBLE
-
-                if (!it) {
+            it?.let { connectionStatus ->
+                if (!connectionStatus) {
                     tokenInternetAlertDialog
                         .setMessage("Please check the token or the internet connection")
                         .setTitle("Login Failed")
@@ -221,23 +223,10 @@ class LoginFragment : Fragment() {
                 password.isNotEmpty() &&
                 token.isNotEmpty()
             ) {
-                if (!loginButtonLock.status) {
-                    lockButton(loginButtonLock)
-                    binding.progressBar.visibility = View.VISIBLE
-
-                    viewModel.login(username, password, token)
-                }
+                viewModel.login(username, password, token)
             } else {
                 fillAllFieldsToast.show()
             }
         }
-    }
-
-    private fun unlockButton(lock: Lock) {
-        lock.status = false
-    }
-
-    private fun lockButton(lock: Lock) {
-        lock.status = true
     }
 }

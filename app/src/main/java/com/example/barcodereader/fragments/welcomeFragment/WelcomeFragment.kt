@@ -36,7 +36,7 @@ class WelcomeFragment : Fragment() {
         val user = viewModel.retUserSuspend()
         if (user != null) {
             userData = user
-            println(userData)
+            println("Welcome Fragment $userData")
             findNavController().navigate(
                 WelcomeFragmentDirections.actionWelcomeFragmentToScanFragment()
             )

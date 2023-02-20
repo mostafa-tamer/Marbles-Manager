@@ -6,21 +6,27 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+class RetrofitClient private constructor() {
+    companion object {
+        private lateinit var api: ApiService
 
-class Api(subBaseURL: String) {
-    private val url = "http://$subBaseURL/api/v1/topsoftware/"
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(url)
-        .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory(CoroutineCallAdapterFactory())
-        .client(
-            OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(600, TimeUnit.SECONDS)
-                .build()
-        )
-        .build()
-
-    val call: ApiService = retrofit.create(ApiService::class.java)
+        @Synchronized
+        fun getApiInstance(subBaseURL: String): ApiService {
+            return if (!::api.isInitialized) {
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("http://$subBaseURL/api/v1/topsoftware/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(CoroutineCallAdapterFactory())
+                    .client(
+                        OkHttpClient.Builder()
+                            .connectTimeout(10, TimeUnit.SECONDS)
+                            .readTimeout(600, TimeUnit.SECONDS)
+                            .build()
+                    ).build()
+                retrofit.create(ApiService::class.java)
+            } else {
+                api
+            }
+        }
+    }
 }

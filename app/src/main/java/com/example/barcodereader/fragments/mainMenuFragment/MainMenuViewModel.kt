@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.barcodereader.databaes.UserDao
 import com.example.barcodereader.fragments.viewModels.ScanViewModel
-import com.example.barcodereader.network.Api
+import com.example.barcodereader.network.RetrofitClient
 import com.example.barcodereader.network.properties.get.groups.Groups
 import com.example.barcodereader.userData
 import com.example.barcodereader.utils.Observable
@@ -33,13 +33,14 @@ class MainMenuViewModel(private val userDao: UserDao) : ScanViewModel(userDao) {
     fun branchesPills() {
         viewModelScope.launch {
             try {
-                val api = Api(userData.subBaseURL)
 
-                val response = api.call.getBranches(
-                    userData.schema,
-                    userData.loginCount,
-                    userData.employeeNumber
-                )
+                val response = RetrofitClient
+                    .getApiInstance(userData.subBaseURL)
+                    .getBranches(
+                        userData.schema,
+                        userData.loginCount,
+                        userData.employeeNumber
+                    )
 
                 if (response.isSuccessful) {
                     groupsPills.setValue(

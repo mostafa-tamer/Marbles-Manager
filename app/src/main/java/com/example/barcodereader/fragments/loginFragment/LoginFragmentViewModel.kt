@@ -9,12 +9,13 @@ import com.example.barcodereader.databaes.SavedUsers
 import com.example.barcodereader.databaes.SavedUsersDao
 import com.example.barcodereader.databaes.User
 import com.example.barcodereader.databaes.UserDao
-import com.example.barcodereader.network.Api
+import com.example.barcodereader.network.RetrofitClient
 import com.example.barcodereader.network.properties.post.login.LoginRequest
 import com.example.barcodereader.network.properties.post.login.LoginResponse
 import com.example.barcodereader.userData
 import com.example.barcodereader.utils.Observable
 import com.example.barcodereader.utils.TokenDecrypt
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import retrofit2.Response
@@ -24,12 +25,13 @@ class LoginFragmentViewModel(
     private val savedUsersDao: SavedUsersDao
 ) : ViewModel() {
 
+    var isBusy = MutableLiveData(false)
 
     val connectionStatus = Observable(true)
     val saveUserDatabaseStatus = MutableLiveData(true)
     val saveRememberedUsersDatabaseStatus = MutableLiveData(true)
 
-    val response = Observable<Response<LoginResponse>>(null)
+    val loginResponse = Observable<Response<LoginResponse>>(null)
 
     private lateinit var username: String
     private lateinit var password: String
@@ -43,6 +45,11 @@ class LoginFragmentViewModel(
         password: String,
         token: String
     ) {
+
+        if (isBusy.value!!)
+            return
+        isBusy.value = true
+
         this.username = username
         this.password = password
         this.token = token
@@ -52,38 +59,51 @@ class LoginFragmentViewModel(
                 val pair = TokenDecrypt.decrypt(token)
                 val subBaseURL = pair.first
                 val schema = pair.second
-
-                val api = Api(subBaseURL)
-                val loginRequest =
-                    LoginRequest(
-                        username,
-                        password,
-                        schema
+                println(subBaseURL)
+                val response = RetrofitClient
+                    .getApiInstance(subBaseURL)
+                    .login(
+                        LoginRequest(
+                            username,
+                            password,
+                            schema
+                        )
                     )
 
-                response.setValue(api.call.login(loginRequest))
+                if (response.isSuccessful) {
+                    loginResponse.setValue(response)
+                    if (response.code() == 200) {
+                        response.body()?.let { body ->
+                            saveRememberedUsersDatabaseStatus.value =
+                                saveRememberedUsers(body.data.employeeNumber)
 
-                response.getValue()?.let {
-                    if (it.code() == 200) {
-                        it.body()?.let { loginResponse ->
-                            runBlocking {
-                                saveRememberedUsersDatabaseStatus.value =
-                                    saveRememberedUsers(loginResponse.data.employeeNumber)
-                            }
                             saveUserDatabaseStatus.value =
-                                saveUserResponse(loginResponse, loginRequest, subBaseURL)
+                                saveUserResponse(
+                                    body,
+                                    username,
+                                    password,
+                                    schema,
+                                    subBaseURL
+                                )
+
                         }
                     }
+                } else {
+                    throw Exception("Login Error: " + response.code())
                 }
+                isBusy.value = false
                 connectionStatus.setValue(true)
+            } catch (e: CancellationException) {
+                println(e.message)
             } catch (e: Exception) {
                 connectionStatus.setValue(false)
+                println(e.message)
             }
         }
     }
 
-    private suspend fun saveRememberedUsers(employeeNumber: String): Boolean {
-        return try {
+    private suspend fun saveRememberedUsers(employeeNumber: String): Boolean = runBlocking {
+        try {
             savedUsersDao.insertUser(
                 SavedUsers(
                     employeeNumber,
@@ -100,14 +120,16 @@ class LoginFragmentViewModel(
 
     private suspend fun saveUserResponse(
         response: LoginResponse,
-        loginRequest: LoginRequest,
+        username: String,
+        password: String,
+        schema: String,
         subBaseURL: String
-    ): Boolean {
+    ): Boolean = runBlocking {
         val user = User(
             response.data.employeeName,
-            loginRequest.userName,
-            loginRequest.password,
-            loginRequest.schema,
+            username,
+            password,
+            schema,
             response.data.loginCount,
             response.data.loginLanguage,
             response.data.employeeNumber,
@@ -116,9 +138,9 @@ class LoginFragmentViewModel(
 
         userData = user
 
-        println(userData)
+        println("Login Fragment $userData")
 
-        return try {
+        try {
             userDao.insertUser(user)
             true
         } catch (e: Exception) {

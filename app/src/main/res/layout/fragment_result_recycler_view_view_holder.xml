@@ -10,8 +10,9 @@
 
 
     <LinearLayout
-        android:background="@drawable/table_row_stroke"
-        android:id="@+id/view_holder" style="@style/linear_layout_card_view_result_fragment">
+        android:id="@+id/view_holder"
+        style="@style/linear_layout_card_view_result_fragment"
+        android:background="@drawable/table_row_stroke">
 
         <TextView
             android:id="@+id/brandName"

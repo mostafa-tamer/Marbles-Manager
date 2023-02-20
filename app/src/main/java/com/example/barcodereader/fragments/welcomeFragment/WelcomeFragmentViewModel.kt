@@ -12,18 +12,8 @@ class WelcomeFragmentViewModel(private val dataSource: UserDao) : ViewModel() {
 
     val status = MutableLiveData(true)
 
-    fun retUser(): LiveData<User>? {
-        return try {
-            status.value = true
-            dataSource.retUser()
-        } catch (e: Exception) {
-            status.value = false
-            return null
-        }
-    }
-
-    fun retUserSuspend():User?  {
-        return  runBlocking {
+    fun retUserSuspend(): User? {
+        return runBlocking {
             dataSource.retUserSuspend()
         }
     }

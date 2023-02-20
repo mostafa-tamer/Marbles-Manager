@@ -205,7 +205,7 @@
                     <TextView
                         android:id="@+id/frz_edit"
                         style="@style/item_properties_fragment_result"
-                        android:text="@{inventoryItem.frz}"  />
+                        android:text="@{inventoryItem.frz}" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -222,12 +222,12 @@
                         android:text=": " />
 
                     <EditText
-                        android:layoutDirection="ltr"
                         android:id="@+id/amount_edit"
                         style="@style/item_properties_fragment_result"
                         android:ems="6"
-                        android:padding="5dp"
                         android:inputType="numberDecimal"
+                        android:layoutDirection="ltr"
+                        android:padding="5dp"
                         android:text="@{inventoryItem.amount}"
                         android:textAlignment="center" />
 
@@ -277,12 +277,12 @@
                         android:text=": " />
 
                     <EditText
-                        android:layoutDirection="ltr"
                         android:id="@+id/number_edit"
                         style="@style/item_properties_fragment_result"
                         android:ems="6"
-                        android:padding="5dp"
                         android:inputType="numberDecimal"
+                        android:layoutDirection="ltr"
+                        android:padding="5dp"
                         android:text="@{inventoryItem.number}"
                         android:textAlignment="center" />
 
@@ -316,7 +316,6 @@
                     </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
-
 
 
                 <androidx.cardview.widget.CardView

@@ -8,8 +8,6 @@ import com.example.barcodereader.databaes.UserDao
 class ResultFragmentViewModel(private val dataSource: UserDao) : ViewModel() {
 
 
-
-
     class ResultFragmentViewModelFactory(private val dataSource: UserDao) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {

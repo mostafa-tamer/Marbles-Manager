@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.barcodereader.R
 import com.example.barcodereader.databaes.TopSoftwareDatabase
 import com.example.barcodereader.databinding.FragmentScanBinding
 import com.example.barcodereader.databinding.FragmentScanManualBarcodeViewHolderBinding
@@ -32,6 +33,7 @@ class MainMenuFragment : Fragment() {
     private lateinit var marblesErrorAlertDialog: CustomAlertDialog
     private lateinit var failToGetDataAlertDialog: CustomAlertDialog
     private lateinit var manualAlertDialog: CustomAlertDialog
+    private lateinit var logoutInsuranceAlertDialog: CustomAlertDialog
 
     private lateinit var pleaseWriteBarcodeToast: Toast
     private lateinit var pleaseWaitTheInteractionToast: Toast
@@ -102,16 +104,17 @@ class MainMenuFragment : Fragment() {
         marblesErrorAlertDialog = CustomAlertDialog(requireContext())
         failToGetDataAlertDialog = CustomAlertDialog(requireContext())
         manualAlertDialog = CustomAlertDialog(requireContext())
+        logoutInsuranceAlertDialog = CustomAlertDialog(requireContext())
     }
 
     private fun spinnerVisible() {
         binding.progressBar.visibility = View.VISIBLE
-        visibleSpinner.setValue(0)
+        visibleSpinner.value = 0
     }
 
     private fun spinnerInvisible() {
         binding.progressBar.visibility = View.INVISIBLE
-        visibleSpinner.setValue(4)
+        visibleSpinner.value = 4
     }
 
     private fun lockButtons() {
@@ -212,7 +215,7 @@ class MainMenuFragment : Fragment() {
                 .setBody(manualBarcodeViewHolderBinding.root)
                 .setTitle("Barcode").setNegativeButton("Cancel")
                 .setPositiveButton("Ok") {
-                    if (visibleSpinner.getValue()!! == 4) {
+                    if (visibleSpinner.value!! == 4) {
                         if (manualBarcodeViewHolderBinding.barcode.text.toString().isNotEmpty()) {
                             it.dismiss()
                             viewModel.barcode.setValue(manualBarcodeViewHolderBinding.barcode.text.toString())
@@ -300,21 +303,20 @@ class MainMenuFragment : Fragment() {
 
     private fun logoutButtonListener() {
 
-//        binding.logoutButton.setOnTouchListener { _, event ->
-//            lockButtons()
-//            viewModel.logout()
-//            event.action == MotionEvent.ACTION_UP
-//        }
-//
         binding.logoutButton.setOnClickListener {
-            lockButtons()
-            viewModel.logout()
+            logoutInsuranceAlertDialog.setTitle(getString(R.string.warning))
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Ok") {
+                    lockButtons()
+                    viewModel.logout()
+                }.setNegativeButton(getString(R.string.cancel))
+                .showDialog()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (visibleSpinner.getValue()!! == 4) {
+        if (visibleSpinner.value!! == 4) {
             unlockButtons()
         }
     }

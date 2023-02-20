@@ -8,7 +8,7 @@ import com.example.barcodereader.databaes.InventoryItem
 import com.example.barcodereader.databaes.InventoryItemDao
 import com.example.barcodereader.databaes.UserDao
 import com.example.barcodereader.fragments.viewModels.ScanViewModel
-import com.example.barcodereader.network.Api
+import com.example.barcodereader.network.RetrofitClient
 import com.example.barcodereader.network.properties.post.saveData.SaveDataRequest
 import com.example.barcodereader.network.properties.post.saveData.SaveDataResponse
 import com.example.barcodereader.network.properties.post.saveData.SavedItems
@@ -52,8 +52,6 @@ class InventoryScanViewModel(
     ) {
         viewModelScope.launch {
             try {
-                val api = Api(userData.subBaseURL)
-
                 val convertedList = mutableListOf<SavedItems>()
                 itemsList.forEach {
                     convertedList.add(
@@ -82,13 +80,25 @@ class InventoryScanViewModel(
                     schema
                 )
 
-                sentDataResponse.setValue(
-                    api.call.sendData(
+                println(saveDataRequest)
+                println(userData.loginCount)
+                println(userData.employeeNumber)
+
+                val response = RetrofitClient
+                    .getApiInstance(userData.subBaseURL)
+                    .sendData(
                         saveDataRequest,
                         userData.loginCount,
                         userData.employeeNumber
                     )
-                )
+
+                if (response.isSuccessful) {
+                    sentDataResponse.setValue(
+                        response
+                    )
+                } else {
+                    throw Exception("Error Occurred: " + response.code())
+                }
 
                 connectionStatus.setValue(true)
             } catch (e: Exception) {

@@ -12,4 +12,4 @@ data class BrandLanguages(
     val It: String,
     val Ru: String,
     val Tr: String
-):Parcelable
+) : Parcelable

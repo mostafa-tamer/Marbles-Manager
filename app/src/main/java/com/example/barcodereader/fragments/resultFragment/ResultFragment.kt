@@ -9,12 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.barcodereader.R
+import com.example.barcodereader.databaes.TopSoftwareDatabase
 import com.example.barcodereader.databinding.FragmentResultBinding
 import com.example.barcodereader.fragments.mainMenuFragment.LanguageFactory
 import com.example.barcodereader.network.properties.get.marble.BrandLanguages
 import com.example.barcodereader.network.properties.get.marble.Data
 import com.example.barcodereader.network.properties.get.marble.Table
-import com.example.barcodereader.databaes.TopSoftwareDatabase
 
 
 class ResultFragment : Fragment() {
