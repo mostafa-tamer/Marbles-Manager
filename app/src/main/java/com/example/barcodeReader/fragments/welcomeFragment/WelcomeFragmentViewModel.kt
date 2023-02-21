@@ -3,8 +3,8 @@ package com.example.barcodeReader.fragments.welcomeFragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.barcodeReader.databaes.User
-import com.example.barcodeReader.databaes.UserDao
+import com.example.barcodeReader.database.User
+import com.example.barcodeReader.database.UserDao
 import kotlinx.coroutines.runBlocking
 
 class WelcomeFragmentViewModel(private val dataSource: UserDao) : ViewModel() {

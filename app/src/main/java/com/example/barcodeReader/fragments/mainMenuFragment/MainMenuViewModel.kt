@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.barcodeReader.EnPack.error
 import com.example.barcodeReader.EnPack.error_occurred
 import com.example.barcodeReader.EnPack.server_is_unreachable
-import com.example.barcodeReader.databaes.UserDao
+import com.example.barcodeReader.database.UserDao
 import com.example.barcodeReader.network.RetrofitClient
 import com.example.barcodeReader.network.properties.get.groups.Groups
 import com.example.barcodeReader.network.properties.get.marble.Marble

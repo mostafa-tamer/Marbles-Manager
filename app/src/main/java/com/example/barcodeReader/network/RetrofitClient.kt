@@ -19,7 +19,7 @@ class RetrofitClient private constructor() {
                     .client(
                         OkHttpClient.Builder()
                             .connectTimeout(10, TimeUnit.SECONDS)
-                            .readTimeout(600, TimeUnit.SECONDS)
+                            .readTimeout(60, TimeUnit.SECONDS)
                             .build()
                     ).build()
                 retrofit.create(ApiService::class.java)

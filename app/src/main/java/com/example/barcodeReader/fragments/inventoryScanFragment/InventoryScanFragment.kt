@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.example.barcodeReader.databaes.InventoryItem
-import com.example.barcodeReader.databaes.TopSoftwareDatabase
+import com.example.barcodeReader.database.InventoryItem
+import com.example.barcodeReader.database.TopSoftwareDatabase
 import com.example.barcodeReader.databinding.FragmentInventoryScanBinding
 import com.example.barcodeReader.databinding.FragmentScanManualBarcodeViewHolderBinding
 import com.example.barcodeReader.network.properties.get.marble.Table
@@ -147,7 +147,6 @@ class InventoryScanFragment : Fragment() {
         )
         isSendDataBusyObserver()
         sentDataResponseObserver()
-        connectionStatusObserver()
         isRetMarbleDataBusyObserver()
     }
 
@@ -412,21 +411,6 @@ class InventoryScanFragment : Fragment() {
     ) { result: ScanIntentResult ->
         if (result.contents != null) {
             viewModel.barcode.setValue(result.contents)
-        }
-    }
-
-
-    private fun connectionStatusObserver() {
-        viewModel.connectionStatus.work {
-            it?.let {
-                if (!it) {
-                    internetConnectionAlertDialog
-                        .setMessage("Please check the token or the internet connection")
-                        .setTitle("Error").setPositiveButton("OK") {
-                            it.dismiss()
-                        }.showDialog()
-                }
-            }
         }
     }
 

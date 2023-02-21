@@ -10,7 +10,7 @@ import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barcodeReader.Arabic
 import com.example.barcodeReader.Language
-import com.example.barcodeReader.databaes.InventoryItem
+import com.example.barcodeReader.database.InventoryItem
 import com.example.barcodeReader.databinding.ItemPropertiesViewHolderBinding
 import com.example.barcodeReader.fragments.mainMenuFragment.LanguageFactory
 import com.example.barcodeReader.userData

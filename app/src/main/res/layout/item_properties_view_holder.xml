@@ -8,7 +8,7 @@
 
         <variable
             name="inventoryItem"
-            type="com.example.barcodeReader.databaes.InventoryItem" />
+            type="com.example.barcodeReader.database.InventoryItem" />
 
         <variable
             name="language"
@@ -227,6 +227,7 @@
                         android:ems="6"
                         android:inputType="numberDecimal"
                         android:layoutDirection="ltr"
+                        android:maxLength="10"
                         android:padding="5dp"
                         android:text="@{inventoryItem.amount}"
                         android:textAlignment="center" />
@@ -282,6 +283,7 @@
                         android:ems="6"
                         android:inputType="numberDecimal"
                         android:layoutDirection="ltr"
+                        android:maxLength="10"
                         android:padding="5dp"
                         android:text="@{inventoryItem.number}"
                         android:textAlignment="center" />

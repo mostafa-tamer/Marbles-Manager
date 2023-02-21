@@ -3,8 +3,6 @@
     <string name="login">Login</string>
     <string name="username">Username</string>
     <string name="organization">Organization</string>
-
-
     <string name="warning">Warning</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>

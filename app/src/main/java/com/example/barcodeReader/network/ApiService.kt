@@ -11,7 +11,6 @@ import retrofit2.http.*
 
 
 interface ApiService {
-
     @GET("barcode")
     suspend fun getBarcode(
         @Query("schema") schema: String,

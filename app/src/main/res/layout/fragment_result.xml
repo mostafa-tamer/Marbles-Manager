@@ -47,7 +47,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="5dp"
-            app:cardCornerRadius="15dp"
+            app:cardCornerRadius="10dp"
             app:cardElevation="10dp">
 
             <LinearLayout
@@ -115,7 +115,7 @@
             style="@style/card_view_fragment_result"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            app:cardCornerRadius="15dp"
+            app:cardCornerRadius="10dp"
             app:cardElevation="10dp">
 
             <LinearLayout style="@style/linear_layout_card_view_result_fragment">
@@ -150,7 +150,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
-            app:cardCornerRadius="15dp"
+            app:cardCornerRadius="10dp"
             app:cardElevation="10dp">
 
             <androidx.recyclerview.widget.RecyclerView

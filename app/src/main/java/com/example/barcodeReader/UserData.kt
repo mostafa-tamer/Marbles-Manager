@@ -1,7 +1,6 @@
 package com.example.barcodeReader
 
-import com.example.barcodeReader.databaes.User
+import com.example.barcodeReader.database.User
 
 lateinit var userData: User
-
 

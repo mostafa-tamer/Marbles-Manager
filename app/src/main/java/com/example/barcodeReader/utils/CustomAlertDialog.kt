@@ -23,7 +23,7 @@ class CustomAlertDialog(private val context: Context) {
     }
 
     private fun initializeVisibility() {
-//        layout.image.visibility = View.GONE
+        layout.image.visibility = View.GONE
         layout.titleText.visibility = View.GONE
         layout.messageText.visibility = View.GONE
         layout.body.visibility = View.GONE

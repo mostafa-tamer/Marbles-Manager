@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.barcodeReader.databaes.TopSoftwareDatabase
+import com.example.barcodeReader.database.TopSoftwareDatabase
 import com.example.barcodeReader.databinding.FragmentWelcomeBinding
 import com.example.barcodeReader.userData
 

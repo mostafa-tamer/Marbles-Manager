@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.barcodeReader.R
-import com.example.barcodeReader.databaes.TopSoftwareDatabase
+import com.example.barcodeReader.database.TopSoftwareDatabase
 import com.example.barcodeReader.databinding.FragmentScanBinding
 import com.example.barcodeReader.databinding.FragmentScanManualBarcodeViewHolderBinding
 import com.example.barcodeReader.userData

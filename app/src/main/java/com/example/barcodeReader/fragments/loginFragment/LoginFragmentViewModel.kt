@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.barcodeReader.EnPack.error_occurred
 import com.example.barcodeReader.EnPack.server_is_unreachable
-import com.example.barcodeReader.databaes.SavedUsers
-import com.example.barcodeReader.databaes.SavedUsersDao
-import com.example.barcodeReader.databaes.User
-import com.example.barcodeReader.databaes.UserDao
+import com.example.barcodeReader.database.SavedUsers
+import com.example.barcodeReader.database.SavedUsersDao
+import com.example.barcodeReader.database.User
+import com.example.barcodeReader.database.UserDao
 import com.example.barcodeReader.network.RetrofitClient
 import com.example.barcodeReader.network.properties.post.login.LoginRequest
 import com.example.barcodeReader.network.properties.post.login.LoginResponse

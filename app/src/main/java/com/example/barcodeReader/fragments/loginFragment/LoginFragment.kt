@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.barcodeReader.R
-import com.example.barcodeReader.databaes.SavedUsers
-import com.example.barcodeReader.databaes.TopSoftwareDatabase
+import com.example.barcodeReader.database.SavedUsers
+import com.example.barcodeReader.database.TopSoftwareDatabase
 import com.example.barcodeReader.databinding.FragmentLoginBinding
 import com.example.barcodeReader.databinding.FragmentLoginSavedUserButtonBinding
 import com.example.barcodeReader.databinding.FragmentLoginSavedUsersContainerBinding
@@ -76,13 +76,22 @@ class LoginFragment : Fragment() {
     private fun listeners() {
         loginButtonClickListener()
         savedUsersListener()
+        offlineModeListener()
+    }
+
+    private fun offlineModeListener() {
+        binding.offlineModeButton.setOnClickListener {
+            findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToOfflineModeFragment())
+        }
     }
 
     private fun isLoginBusyObserver() {
         viewModel.isLoginBusyLiveData.observe(viewLifecycleOwner) {
             if (it == false) {
+                unlockButton()
                 binding.progressBar.visibility = View.INVISIBLE
             } else {
+                lockButton()
                 binding.progressBar.visibility = View.VISIBLE
             }
         }
@@ -156,11 +165,13 @@ class LoginFragment : Fragment() {
     private fun lockButton() {
         binding.savedUsers.lockButton()
         binding.loginButton.lockButton()
+        binding.offlineModeButton.lockButton()
     }
 
     private fun unlockButton() {
         binding.savedUsers.unlockButton()
         binding.loginButton.unlockButton()
+        binding.offlineModeButton.unlockButton()
     }
 
     private fun responseObserver() {

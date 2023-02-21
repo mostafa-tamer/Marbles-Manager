@@ -31,6 +31,9 @@
             app:destination="@id/scanFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_offlineModeFragment"
+            app:destination="@id/offlineModeFragment" />
     </fragment>
     <fragment
         android:id="@+id/scanFragment"
@@ -120,5 +123,10 @@
             android:id="@+id/action_invoiceFragment_to_scanInventoryFragment"
             app:destination="@id/scanInventoryFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/offlineModeFragment"
+        android:name="com.example.barcodeReader.fragments.offlineModeFragment.OfflineModeFragment"
+        android:label="fragment_offline_mode"
+        tools:layout="@layout/fragment_offline_mode" />
 
 </navigation>

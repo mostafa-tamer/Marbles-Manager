@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.barcodeReader.EnPack.error
 import com.example.barcodeReader.EnPack.error_occurred
 import com.example.barcodeReader.EnPack.server_is_unreachable
-import com.example.barcodeReader.databaes.InventoryItem
-import com.example.barcodeReader.databaes.InventoryItemDao
+import com.example.barcodeReader.database.InventoryItem
+import com.example.barcodeReader.database.InventoryItemDao
 import com.example.barcodeReader.network.RetrofitClient
 import com.example.barcodeReader.network.properties.get.marble.Marble
 import com.example.barcodeReader.network.properties.post.saveData.SaveDataRequest
@@ -33,7 +33,6 @@ class InventoryScanViewModel(
 
     val barcode = Observable("")
     val marblesBody = Observable<Marble>()
-    val connectionStatus = Observable(true)
 
     fun retMarbleData(schema: String, barcode: String, loginCount: Int, employeeNo: String) {
         if (isRetMarbleDataBusy.value!!)

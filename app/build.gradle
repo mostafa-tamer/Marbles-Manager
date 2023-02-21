@@ -123,4 +123,7 @@ dependencies {
     //ripple
     implementation 'com.balysv:material-ripple:1.0.2'
 
+    //excel
+    implementation 'org.apache.poi:poi:5.1.0'
+
 }

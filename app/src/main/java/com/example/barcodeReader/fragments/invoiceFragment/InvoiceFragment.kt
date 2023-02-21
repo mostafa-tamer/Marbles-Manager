@@ -82,8 +82,8 @@ class InvoiceFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        lock = false
+    override fun onPrimaryNavigationFragmentChanged(isPrimaryNavigationFragment: Boolean) {
+        lock = !isPrimaryNavigationFragment
+        super.onPrimaryNavigationFragmentChanged(isPrimaryNavigationFragment)
     }
 }
