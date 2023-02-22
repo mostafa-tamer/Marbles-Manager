@@ -16,7 +16,6 @@ import com.example.barcodeReader.utils.*
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -29,10 +28,7 @@ class OfflineModeFragment : Fragment() {
     private lateinit var adapter: OfflineModeAdapter
 
     private lateinit var manualAlertDialog: CustomAlertDialog
-    private lateinit var saveListAlertDialog: CustomAlertDialog
     private lateinit var clearListAlertDialog: CustomAlertDialog
-    private lateinit var marblesObserverAlertDialog: CustomAlertDialog
-    private lateinit var internetConnectionAlertDialog: CustomAlertDialog
     private lateinit var exceptionErrorMessageAlertDialog: CustomAlertDialog
 
     private lateinit var clearedToast: Toast
@@ -74,10 +70,7 @@ class OfflineModeFragment : Fragment() {
 
     private fun alertDialogInitialization() {
         manualAlertDialog = CustomAlertDialog(requireContext())
-        saveListAlertDialog = CustomAlertDialog(requireContext())
         clearListAlertDialog = CustomAlertDialog(requireContext())
-        marblesObserverAlertDialog = CustomAlertDialog(requireContext())
-        internetConnectionAlertDialog = CustomAlertDialog(requireContext())
         exceptionErrorMessageAlertDialog = CustomAlertDialog(requireContext())
     }
 
@@ -103,16 +96,56 @@ class OfflineModeFragment : Fragment() {
         clearListListener()
         scanCameraBarcodeListener()
         scanManualBarcodeListener()
+        saveExcelSheet()
+    }
+
+    private fun saveExcelSheet() {
+        binding.save.setOnClickListener {
+            viewModel.exportExcelSheet(requireContext(), itemsList)
+        }
+
     }
 
     private fun observers() {
         retDataObserver()
         listSizeObserver()
+        isSavingDataBusyObserver()
         alertDialogErrorMessageObserver(
             viewModel.alertDialogErrorMessageLiveData,
             viewLifecycleOwner,
             exceptionErrorMessageAlertDialog
         )
+    }
+
+    private fun isSavingDataBusyObserver() {
+        viewModel.isSavingDataBusy.observe(viewLifecycleOwner) {
+
+            busyViewModelController(it)
+        }
+    }
+
+    private fun busyViewModelController(it: Boolean) {
+        if (!it) {
+            binding.progressBar.visibility = View.INVISIBLE
+            unlockButtons()
+        } else {
+            binding.progressBar.visibility = View.VISIBLE
+            lockButtons()
+        }
+    }
+
+    private fun lockButtons() {
+        binding.scanButtonManual.lockButton()
+        binding.scanButtonCamera.lockButton()
+        binding.removeAll.lockButton()
+        binding.save.lockButton()
+    }
+
+    private fun unlockButtons() {
+        binding.scanButtonManual.unlockButton()
+        binding.scanButtonCamera.unlockButton()
+        binding.removeAll.unlockButton()
+        binding.save.unlockButton()
     }
 
 
@@ -154,11 +187,7 @@ class OfflineModeFragment : Fragment() {
     }
 
     private fun updateDB() {
-        lifecycleScope.launch {
-            delay(350)
-            viewModel.deleteDataDB()
-            viewModel.saveDataDB(itemsList)
-        }
+        viewModel.updateDB(itemsList)
     }
 
     private fun viewModelInitialization() {
@@ -214,7 +243,6 @@ class OfflineModeFragment : Fragment() {
     }
 
     private fun addItemsToList(barcode: String, amount: String, number: String) {
-
         itemsList.add(
             InventoryItemOfflineMode(
                 barcode,

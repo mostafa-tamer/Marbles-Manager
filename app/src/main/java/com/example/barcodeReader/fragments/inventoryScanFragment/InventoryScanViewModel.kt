@@ -20,6 +20,7 @@ import com.example.barcodeReader.utils.AlertDialogErrorMessage
 import com.example.barcodeReader.utils.CustomList
 import com.example.barcodeReader.utils.Observable
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -73,15 +74,16 @@ class InventoryScanViewModel(
         }
     }
 
-    fun saveDataDB(inventoryItems: List<InventoryItem>) {
-        viewModelScope.launch {
-            inventoryItemDao.insertItems(inventoryItems)
-        }
-    }
-
-    fun deleteDataDB(groupCode: String, pillCode: String) {
-        viewModelScope.launch {
+    fun updateDB(
+        itemsList: CustomList<InventoryItem>,
+        groupCode: String,
+        pillCode: String
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
             inventoryItemDao.deleteItemsData(groupCode, pillCode, userData.employeeNumber)
+            for (i in itemsList) {
+                inventoryItemDao.insertItems(i)
+            }
         }
     }
 

@@ -50,7 +50,7 @@ data class InventoryItem(
 @Dao
 interface InventoryItemDao {
     @Insert
-    suspend fun insertItems(inventoryItem: List<InventoryItem>)
+    suspend fun insertItems(inventoryItem: InventoryItem)
 
     @Query("select * from InventoryItem where groupCode = :groupCode and pillCode = :pillCode and employeeNumber = :employeeNumber")
     fun retItems(
@@ -79,7 +79,7 @@ data class InventoryItemOfflineMode(
 @Dao
 interface InventoryItemOfflineModeDao {
     @Insert
-    suspend fun insertItems(InventoryItemOfflineMode: List<InventoryItemOfflineMode>)
+    suspend fun insertItems(InventoryItemOfflineMode: InventoryItemOfflineMode )
 
     @Query("select * from InventoryItemOfflineMode")
     fun retItems(): LiveData<List<InventoryItemOfflineMode>>

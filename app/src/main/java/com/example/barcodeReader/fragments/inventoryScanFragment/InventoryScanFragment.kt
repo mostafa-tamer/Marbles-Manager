@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.barcodeReader.database.InventoryItem
 import com.example.barcodeReader.database.TopSoftwareDatabase
 import com.example.barcodeReader.databinding.FragmentInventoryScanBinding
@@ -18,8 +17,6 @@ import com.example.barcodeReader.utils.*
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -287,11 +284,7 @@ class InventoryScanFragment : Fragment() {
     }
 
     private fun updateDB() {
-        lifecycleScope.launch {
-            delay(50)
-            viewModel.deleteDataDB(groupCode, pillCode)
-            viewModel.saveDataDB(itemsList)
-        }
+        viewModel.updateDB(itemsList, groupCode, pillCode)
     }
 
     private fun marbleObserver() {
