@@ -7,6 +7,7 @@ import com.example.barcodeReader.network.properties.get.marble.MetaData
 import com.example.barcodeReader.userData
 
 fun makeupBarcode(barcode: String): String {
+    if (barcode.isEmpty()) return ""
     return if (barcode[0] == '0') {
         var counter = 0
         for (element in barcode) {
@@ -34,6 +35,7 @@ fun alertDialogErrorMessageObserver(
                 .setMessage(it.message)
                 .setPositiveButton(ok)
                 .showDialog()
+            alertDialogErrorMessageLiveData.value = AlertDialogErrorMessage()
         }
     }
 }

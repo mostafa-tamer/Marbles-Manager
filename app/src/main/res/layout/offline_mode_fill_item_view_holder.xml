@@ -26,25 +26,8 @@
     <com.google.android.material.textfield.TextInputLayout
 
         style="@style/loginCardView"
-        android:hint="Amount"
-        app:startIconDrawable="@drawable/item_amount"
-        app:startIconTint="@color/red">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/amount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:text="">
-
-        </com.google.android.material.textfield.TextInputEditText>
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-
-        style="@style/loginCardView"
         android:hint="Number"
-        app:startIconDrawable="@drawable/item_number"
+        app:startIconDrawable="@drawable/item_amount"
         app:startIconTint="@color/red">
 
         <com.google.android.material.textfield.TextInputEditText

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.barcodeReader.database.InventoryItemOfflineMode
 import com.example.barcodeReader.database.TopSoftwareDatabase
 import com.example.barcodeReader.databinding.FragmentOfflineModeBinding
@@ -16,7 +15,7 @@ import com.example.barcodeReader.utils.*
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class OfflineModeFragment : Fragment() {
@@ -33,20 +32,22 @@ class OfflineModeFragment : Fragment() {
 
     private lateinit var clearedToast: Toast
     private lateinit var listIsEmptyToast: Toast
-    private lateinit var fillAllFieldsToast: Toast
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        binding = FragmentOfflineModeBinding.inflate(layoutInflater)
-
-        adapter = OfflineModeAdapter(itemsList)
-        binding.container.adapter = adapter
-
         viewModelInitialization()
-
         alertDialogInitialization()
         toastInitialization()
+        fillItemsListFromDb()
+
+        binding = FragmentOfflineModeBinding.inflate(layoutInflater)
+
+        adapter = OfflineModeAdapter(itemsList, viewModel.isUpdatingDbBusy)
+        binding.container.adapter = adapter
+
+
+
 
         listeners()
         observers()
@@ -57,7 +58,6 @@ class OfflineModeFragment : Fragment() {
     private fun toastInitialization() {
         listIsEmptyToast = createToast("List is empty!")
         clearedToast = createToast("Cleared!")
-        fillAllFieldsToast = createToast("Please fill all fields!")
     }
 
     private fun createToast(message: String): Toast {
@@ -74,21 +74,9 @@ class OfflineModeFragment : Fragment() {
         exceptionErrorMessageAlertDialog = CustomAlertDialog(requireContext())
     }
 
-    private fun retDataObserver() {
-        var once = true
-        viewModel.retDataDB().observe(viewLifecycleOwner) {
-            it.let {
-                if (once) {
-                    once = false
-                    it?.let {
-                        itemsList.addAll(it)
-                        adapter.notifyItemRangeChanged(
-                            0,
-                            itemsList.size
-                        )
-                    }
-                }
-            }
+    private fun fillItemsListFromDb() {
+        runBlocking {
+            itemsList.addAll(viewModel.retDataDB())
         }
     }
 
@@ -101,15 +89,15 @@ class OfflineModeFragment : Fragment() {
 
     private fun saveExcelSheet() {
         binding.save.setOnClickListener {
-            viewModel.exportExcelSheet(requireContext(), itemsList)
+            viewModel.exportExcelSheet(itemsList,requireContext())
         }
-
     }
 
     private fun observers() {
-        retDataObserver()
+
         listSizeObserver()
         isSavingDataBusyObserver()
+        isUpdatingDbBusyObserver()
         alertDialogErrorMessageObserver(
             viewModel.alertDialogErrorMessageLiveData,
             viewLifecycleOwner,
@@ -119,7 +107,12 @@ class OfflineModeFragment : Fragment() {
 
     private fun isSavingDataBusyObserver() {
         viewModel.isSavingDataBusy.observe(viewLifecycleOwner) {
+            busyViewModelController(it)
+        }
+    }
 
+    private fun isUpdatingDbBusyObserver() {
+        viewModel.isUpdatingDbBusy.observe(viewLifecycleOwner) {
             busyViewModelController(it)
         }
     }
@@ -177,17 +170,11 @@ class OfflineModeFragment : Fragment() {
 
     private fun listSizeObserver() {
         itemsList.sizeLiveData.observe(viewLifecycleOwner) {
-            it?.let {
-                updateDB()
-                if (it > 0) binding.dummyText.text = ""
-                else binding.dummyText.text = "List Is Empty."
-                binding.textItemCount.text = "Scanned Items: ${it}"
-            }
+            viewModel.updateDB(itemsList)
+            if (it > 0) binding.dummyText.text = ""
+            else binding.dummyText.text = "List Is Empty."
+            binding.textItemCount.text = "Scanned Items: ${it}"
         }
-    }
-
-    private fun updateDB() {
-        viewModel.updateDB(itemsList)
     }
 
     private fun viewModelInitialization() {
@@ -217,36 +204,30 @@ class OfflineModeFragment : Fragment() {
         manualAlertDialog
             .setBody(offlineModeItemPropertiesViewHolderBinding.root)
             .setTitle("Barcode").setNegativeButton("Cancel")
-            .setPositiveButton("Ok", false) {
+            .setPositiveButton("Ok") {
+                var barcode =
+                    makeupBarcode(offlineModeItemPropertiesViewHolderBinding.barcode.text.toString())
 
-                if (
-                    offlineModeItemPropertiesViewHolderBinding.barcode.text.toString()
-                        .isNotEmpty() &&
-                    offlineModeItemPropertiesViewHolderBinding.amount.text.toString()
-                        .isNotEmpty() &&
+                var number =
                     offlineModeItemPropertiesViewHolderBinding.number.text.toString()
-                        .isNotEmpty()
-                ) {
-                    it.dismiss()
-                    val barcode =
-                        makeupBarcode(offlineModeItemPropertiesViewHolderBinding.barcode.text.toString())
-                    val amount =
-                        offlineModeItemPropertiesViewHolderBinding.amount.text.toString()
-                    val number =
-                        offlineModeItemPropertiesViewHolderBinding.number.text.toString()
-                    addItemsToList(barcode, amount, number)
-                } else {
-                    fillAllFieldsToast.show()
-                }
+
+                if (barcode.isEmpty())
+                    barcode = "0"
+
+                if (number.isEmpty())
+                    number = "0"
+
+                addItemsToList(barcode, number)
+
             }.setNegativeButton("Cancel")
             .showDialog()
     }
 
-    private fun addItemsToList(barcode: String, amount: String, number: String) {
+    private fun addItemsToList(barcode: String, number: String) {
+
         itemsList.add(
             InventoryItemOfflineMode(
                 barcode,
-                amount,
                 number
             )
         )

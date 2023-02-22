@@ -17,6 +17,7 @@ import com.example.barcodeReader.utils.*
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -57,11 +58,12 @@ class InventoryScanFragment : Fragment() {
         setAttr()
 
         viewModelInitialization()
+        fillItemsListFromDb()
 
         alertDialogInitialization()
         toastInitialization()
 
-        adapter = InventoryScanAdapter(itemsList)
+        adapter = InventoryScanAdapter(itemsList, viewModel.isUpdatingDbBusy)
 
         binding.container.adapter = adapter
         binding.groupName.text = "${groupName}"
@@ -106,22 +108,9 @@ class InventoryScanFragment : Fragment() {
         exceptionErrorMessageAlertDialog = CustomAlertDialog(requireContext())
     }
 
-
-    private fun retDataObserver() {
-        var once = true
-        viewModel.retData(groupCode, pillCode).observe(viewLifecycleOwner) {
-            it.let {
-                if (once) {
-                    once = false
-                    it?.let {
-                        itemsList.addAll(it)
-                        adapter.notifyItemRangeChanged(
-                            0,
-                            itemsList.size
-                        )
-                    }
-                }
-            }
+    private fun fillItemsListFromDb() {
+        runBlocking {
+            itemsList.addAll(viewModel.retData(args.groupCode, args.pillCode))
         }
     }
 
@@ -134,7 +123,6 @@ class InventoryScanFragment : Fragment() {
 
     private fun observers() {
         marbleObserver()
-        retDataObserver()
         barcodeObserver()
         listSizeObserver()
         alertDialogErrorMessageObserver(
@@ -143,8 +131,15 @@ class InventoryScanFragment : Fragment() {
             exceptionErrorMessageAlertDialog
         )
         isSendDataBusyObserver()
+        isUpdatingDbBusyObserver()
         sentDataResponseObserver()
         isRetMarbleDataBusyObserver()
+    }
+
+    private fun isUpdatingDbBusyObserver() {
+        viewModel.isUpdatingDbBusy.observe(viewLifecycleOwner) {
+            busyViewModelController(it)
+        }
     }
 
     private fun isRetMarbleDataBusyObserver() {
@@ -275,7 +270,7 @@ class InventoryScanFragment : Fragment() {
     private fun listSizeObserver() {
         itemsList.sizeLiveData.observe(viewLifecycleOwner) {
             it?.let {
-                updateDB()
+                viewModel.updateDB(itemsList, groupCode, pillCode)
                 if (it > 0) binding.dummyText.text = ""
                 else binding.dummyText.text = "List Is Empty."
                 binding.textItemCount.text = "Scanned Items: ${it}"
@@ -283,9 +278,6 @@ class InventoryScanFragment : Fragment() {
         }
     }
 
-    private fun updateDB() {
-        viewModel.updateDB(itemsList, groupCode, pillCode)
-    }
 
     private fun marbleObserver() {
         viewModel.marblesBody.work { it ->

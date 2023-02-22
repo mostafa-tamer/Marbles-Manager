@@ -6,6 +6,7 @@ class CustomList<T> : ArrayList<T>() {
 
     val sizeLiveData = MutableLiveData<Int>()
 
+
     override fun removeAt(index: Int): T {
         val isAdded = super.removeAt(index)
         sizeLiveData.value = size

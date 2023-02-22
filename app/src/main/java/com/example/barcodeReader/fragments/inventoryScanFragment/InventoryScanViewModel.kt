@@ -22,18 +22,20 @@ import com.example.barcodeReader.utils.Observable
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class InventoryScanViewModel(
     private val inventoryItemDao: InventoryItemDao
 ) : ViewModel() {
     val isSendDataBusy = MutableLiveData(false)
-    val sentDataResponse = Observable<SaveDataResponse>()
+    val isUpdatingDbBusy = MutableLiveData(false)
     val isRetMarbleDataBusy = MutableLiveData(false)
     val alertDialogErrorMessageLiveData = MutableLiveData(AlertDialogErrorMessage())
 
     val barcode = Observable("")
     val marblesBody = Observable<Marble>()
+    val sentDataResponse = Observable<SaveDataResponse>()
 
     fun retMarbleData(schema: String, barcode: String, loginCount: Int, employeeNo: String) {
         if (isRetMarbleDataBusy.value!!)
@@ -74,21 +76,22 @@ class InventoryScanViewModel(
         }
     }
 
-    fun updateDB(
-        itemsList: CustomList<InventoryItem>,
-        groupCode: String,
-        pillCode: String
-    ) {
-        viewModelScope.launch(Dispatchers.IO) {
+    fun updateDB(itemsList: CustomList<InventoryItem>, groupCode: String, pillCode: String) {
+        if (isUpdatingDbBusy.value!!)
+            return
+        isUpdatingDbBusy.value = true
+
+        viewModelScope.launch(Dispatchers.IO) { 
             inventoryItemDao.deleteItemsData(groupCode, pillCode, userData.employeeNumber)
-            for (i in itemsList) {
-                inventoryItemDao.insertItems(i)
+            inventoryItemDao.insertItems(itemsList)
+            withContext(Dispatchers.Main) {
+                isUpdatingDbBusy.value = false
             }
         }
     }
 
-    fun retData(groupCode: String, pillCode: String) =
-        inventoryItemDao.retItems(groupCode, pillCode, userData.employeeNumber)
+    suspend fun retData(groupCode: String, pillCode: String) =
+        inventoryItemDao.retItemsSuspend(groupCode, pillCode, userData.employeeNumber)
 
     fun sendData(
         itemsList: CustomList<InventoryItem>,

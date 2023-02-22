@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.barcodeReader.Arabic
 import com.example.barcodeReader.Language
@@ -17,7 +18,8 @@ import com.example.barcodeReader.userData
 import com.example.barcodeReader.utils.CustomList
 
 class InventoryScanAdapter(
-    val itemsList: CustomList<InventoryItem>
+    val itemsList: CustomList<InventoryItem>,
+    private val updatingDbBusy: MutableLiveData<Boolean>
 ) : RecyclerView.Adapter<InventoryScanAdapter.ViewHolder>() {
 
     override fun getItemCount() = itemsList.size
@@ -30,7 +32,7 @@ class InventoryScanAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindValues(itemsList[position])
         holder.bindKeys(LanguageFactory().getLanguage(userData.loginLanguage))
-        holder.viewsLogic(position, this)
+        holder.viewsLogic(position, this, updatingDbBusy)
     }
 
     fun create(parent: ViewGroup): ViewHolder {
@@ -89,32 +91,45 @@ class InventoryScanAdapter(
         }
 
         fun viewsLogic(
-            position: Int, inventoryScanAdapter: InventoryScanAdapter
+            position: Int,
+            inventoryScanAdapter: InventoryScanAdapter,
+            updatingDbBusy: MutableLiveData<Boolean>
         ) {
-            removeItem(position, inventoryScanAdapter)
-            saveEditText(position, inventoryScanAdapter)
+            removeItem(position, inventoryScanAdapter, updatingDbBusy)
+            saveEditText(position, inventoryScanAdapter, updatingDbBusy)
         }
 
-        private fun saveEditText(position: Int, inventoryScanAdapter: InventoryScanAdapter) {
-            reset()
+        private fun saveEditText(
+            position: Int,
+            inventoryScanAdapter: InventoryScanAdapter,
+            updatingDbBusy: MutableLiveData<Boolean>
+        ) {
 
+
+            reset()
             binding.amountEdit.addTextChangedListener(amountTextWatcher)
             binding.numberEdit.addTextChangedListener(numberTextWatcher)
 
             binding.amountSave.setOnClickListener {
-                inventoryScanAdapter.itemsList.sizeLiveData.value =
-                    inventoryScanAdapter.itemsList.size
-                if (binding.amountEdit.text.toString() == "") binding.amountEdit.setText("0")
-                inventoryScanAdapter.itemsList[position].amount = binding.amountEdit.text.toString()
-                updateButton("#399636", "#ffffff", binding.amountSave, false)
+                if (!updatingDbBusy.value!!) {
+                    inventoryScanAdapter.itemsList.sizeLiveData.value =
+                        inventoryScanAdapter.itemsList.size
+                    if (binding.amountEdit.text.toString() == "") binding.amountEdit.setText("0")
+                    inventoryScanAdapter.itemsList[position].amount =
+                        binding.amountEdit.text.toString()
+                    updateButton("#399636", "#ffffff", binding.amountSave, false)
+                }
             }
 
             binding.numberSave.setOnClickListener {
-                inventoryScanAdapter.itemsList.sizeLiveData.value =
-                    inventoryScanAdapter.itemsList.size
-                if (binding.numberEdit.text.toString() == "") binding.numberEdit.setText("0")
-                inventoryScanAdapter.itemsList[position].number = binding.numberEdit.text.toString()
-                updateButton("#399636", "#ffffff", binding.numberSave, false)
+                if (!updatingDbBusy.value!!) {
+                    inventoryScanAdapter.itemsList.sizeLiveData.value =
+                        inventoryScanAdapter.itemsList.size
+                    if (binding.numberEdit.text.toString() == "") binding.numberEdit.setText("0")
+                    inventoryScanAdapter.itemsList[position].number =
+                        binding.numberEdit.text.toString()
+                    updateButton("#399636", "#ffffff", binding.numberSave, false)
+                }
             }
         }
 
@@ -130,11 +145,14 @@ class InventoryScanAdapter(
         }
 
         private fun removeItem(
-            position: Int, inventoryScanAdapter: InventoryScanAdapter
+            position: Int,
+            inventoryScanAdapter: InventoryScanAdapter,
+            updatingDbBusy: MutableLiveData<Boolean>
         ) {
+
             var lock = true
             binding.removeButton.setOnClickListener {
-                if (lock) {
+                if (lock && !updatingDbBusy.value!!) {
                     lock = false
                     inventoryScanAdapter.itemsList.removeAt(position)
                     inventoryScanAdapter.notifyItemRemoved(position)

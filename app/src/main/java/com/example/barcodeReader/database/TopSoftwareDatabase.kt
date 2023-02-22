@@ -50,14 +50,14 @@ data class InventoryItem(
 @Dao
 interface InventoryItemDao {
     @Insert
-    suspend fun insertItems(inventoryItem: InventoryItem)
+    suspend fun insertItems(inventoryItem: List<InventoryItem>)
 
     @Query("select * from InventoryItem where groupCode = :groupCode and pillCode = :pillCode and employeeNumber = :employeeNumber")
-    fun retItems(
+    suspend fun retItemsSuspend(
         groupCode: String,
         pillCode: String,
         employeeNumber: String
-    ): LiveData<List<InventoryItem>>
+    ): List<InventoryItem>
 
     @Query("delete from InventoryItem where groupCode = :groupCode and pillCode = :pillCode and employeeNumber = :employeeNumber")
     suspend fun deleteItemsData(groupCode: String, pillCode: String, employeeNumber: String)
@@ -70,7 +70,6 @@ interface InventoryItemDao {
 @Entity
 data class InventoryItemOfflineMode(
     val itemCode: String,
-    var amount: String,
     var number: String,
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0
@@ -79,10 +78,13 @@ data class InventoryItemOfflineMode(
 @Dao
 interface InventoryItemOfflineModeDao {
     @Insert
-    suspend fun insertItems(InventoryItemOfflineMode: InventoryItemOfflineMode )
+    suspend fun insertItems(InventoryItemOfflineMode: List<InventoryItemOfflineMode>)
 
     @Query("select * from InventoryItemOfflineMode")
     fun retItems(): LiveData<List<InventoryItemOfflineMode>>
+
+    @Query("select * from InventoryItemOfflineMode")
+    suspend fun retItemsSuspend(): List<InventoryItemOfflineMode>
 
     @Query("delete from InventoryItemOfflineMode")
     suspend fun deleteItemsData()
