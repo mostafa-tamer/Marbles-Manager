@@ -18,4 +18,4 @@ data class MetaData(
     val xdimension: String,
     val ydimension: String,
     val zdimension: String
-):Parcelable
+) : Parcelable

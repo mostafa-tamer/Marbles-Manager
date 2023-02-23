@@ -164,6 +164,7 @@
                                 android:textSize="20dp" />
                         </com.balysv.materialripple.MaterialRippleLayout>
                     </androidx.cardview.widget.CardView>
+
                     <androidx.cardview.widget.CardView
                         style="@style/loginCardView"
                         app:cardCornerRadius="8dp"
@@ -179,16 +180,14 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/rounded_button"
-                                android:backgroundTint="@color/silver"
-                                android:drawableLeft="@drawable/ic_baseline_login_red"
-                                android:drawableRight="@drawable/ic_baseline_login_24"
+                                android:backgroundTint="#3738c6"
                                 android:gravity="center"
                                 android:paddingLeft="15dp"
                                 android:paddingTop="10dp"
                                 android:paddingRight="15dp"
                                 android:paddingBottom="10dp"
                                 android:text="Offline Mode"
-                                android:textColor="@color/red"
+                                android:textColor="@color/white"
                                 android:textSize="20dp" />
                         </com.balysv.materialripple.MaterialRippleLayout>
                     </androidx.cardview.widget.CardView>

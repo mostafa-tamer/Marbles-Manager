@@ -14,7 +14,6 @@ import com.example.barcodeReader.Arabic
 import com.example.barcodeReader.Language
 import com.example.barcodeReader.database.InventoryItemOfflineMode
 import com.example.barcodeReader.databinding.OfflineModeItemPropertiesViewHolderBinding
-import com.example.barcodeReader.fragments.inventoryScanFragment.InventoryScanAdapter
 import com.example.barcodeReader.fragments.mainMenuFragment.LanguageFactory
 import com.example.barcodeReader.utils.CustomList
 
@@ -72,6 +71,7 @@ class OfflineModeAdapter(
 
             updateButton("#ffffff", "#ed1b24", binding.numberSave, false)
         }
+
         private fun saveEditText(
             position: Int,
             inventoryScanAdapter: OfflineModeAdapter,
@@ -124,7 +124,7 @@ class OfflineModeAdapter(
             isUpdatingDbBusy: MutableLiveData<Boolean>,
             isRemovingItemBusy: MutableLiveData<Boolean>
         ) {
-            saveEditText(position,inventoryScanAdapter,isUpdatingDbBusy)
+            saveEditText(position, inventoryScanAdapter, isUpdatingDbBusy)
             removeItem(
                 position,
                 inventoryScanAdapter,

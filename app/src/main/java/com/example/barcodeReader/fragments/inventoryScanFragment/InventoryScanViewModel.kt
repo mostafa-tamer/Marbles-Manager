@@ -81,7 +81,7 @@ class InventoryScanViewModel(
             return
         isUpdatingDbBusy.value = true
 
-        viewModelScope.launch(Dispatchers.IO) { 
+        viewModelScope.launch(Dispatchers.IO) {
             inventoryItemDao.deleteItemsData(groupCode, pillCode, userData.employeeNumber)
             inventoryItemDao.insertItems(itemsList)
             withContext(Dispatchers.Main) {

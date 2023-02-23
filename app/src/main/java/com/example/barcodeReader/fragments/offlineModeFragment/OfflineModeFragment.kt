@@ -89,7 +89,7 @@ class OfflineModeFragment : Fragment() {
 
     private fun saveExcelSheet() {
         binding.save.setOnClickListener {
-            viewModel.exportExcelSheet(itemsList,requireContext())
+            viewModel.exportExcelSheet(itemsList, requireContext())
         }
     }
 

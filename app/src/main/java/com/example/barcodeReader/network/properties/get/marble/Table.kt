@@ -10,4 +10,4 @@ data class Table(
     val brandLanguages: BrandLanguages,
     val brandName: String,
     val number: String
-): Parcelable
+) : Parcelable

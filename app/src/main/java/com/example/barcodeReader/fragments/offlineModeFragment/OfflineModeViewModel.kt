@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.lifecycle.MutableLiveData
@@ -19,11 +18,10 @@ import com.example.barcodeReader.utils.CustomList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.apache.poi.hssf.usermodel.HSSFCellStyle
-import org.apache.poi.hssf.usermodel.HSSFWorkbook
-import org.apache.poi.hssf.util.HSSFColor
-import org.apache.poi.ss.usermodel.Cell
-import org.apache.poi.ss.usermodel.CellStyle
+import org.apache.poi.ss.usermodel.*
+import org.apache.poi.xssf.usermodel.XSSFCellStyle
+import org.apache.poi.xssf.usermodel.XSSFRow
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -54,6 +52,42 @@ class OfflineModeViewModel(private val inventoryItemOfflineModeDao: InventoryIte
     suspend fun retDataDB() =
         inventoryItemOfflineModeDao.retItemsSuspend()
 
+    private fun cellStyling(
+        workbook: XSSFWorkbook,
+        indexedColors: Short,
+        fillPatternType: FillPatternType,
+        horizontalAlignment: HorizontalAlignment
+    ): XSSFCellStyle {
+
+        val cellStyle: XSSFCellStyle = workbook.createCellStyle()
+        cellStyle.fillForegroundColor = indexedColors
+        cellStyle.fillPattern = fillPatternType
+        cellStyle.alignment = horizontalAlignment
+        return cellStyle
+    }
+
+    private fun createCell(
+        cellRow: XSSFRow,
+        cellIndex: Int,
+        cellText: String,
+        cellStyle: XSSFCellStyle
+    ) {
+        val cell = cellRow.createCell(cellIndex)
+        cell.setCellValue(cellText)
+        cell.cellStyle = cellStyle
+    }
+
+    private fun createCell(
+        cellRow: XSSFRow,
+        cellIndex: Int,
+        cellText: Double,
+        cellStyle: XSSFCellStyle
+    ) {
+        val cell = cellRow.createCell(cellIndex)
+        cell.setCellValue(cellText)
+        cell.cellStyle = cellStyle
+    }
+
     fun exportExcelSheet(
         itemsList: CustomList<InventoryItemOfflineMode>, context: Context
     ) {
@@ -63,72 +97,38 @@ class OfflineModeViewModel(private val inventoryItemOfflineModeDao: InventoryIte
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val workbook = HSSFWorkbook()
+                val workbook = XSSFWorkbook()
                 val sheet = workbook.createSheet("Sheet1")
 
-                val cellStyle: CellStyle = workbook.createCellStyle().apply {
-                    fillForegroundColor = HSSFColor.AQUA.index
-                    fillPattern = HSSFCellStyle.SOLID_FOREGROUND
-                    alignment = CellStyle.ALIGN_CENTER
-                }
-
-                lateinit var cell: Cell
+                val headerCellStyle = cellStyling(
+                    workbook,
+                    IndexedColors.AQUA.index,
+                    FillPatternType.SOLID_FOREGROUND,
+                    HorizontalAlignment.CENTER
+                )
 
                 val mainRow = sheet.createRow(0)
 
-                cell = mainRow.createCell(0)
-                cell.setCellValue("Code")
-                cell.setCellStyle(cellStyle)
-
-                cell = mainRow.createCell(1)
-                cell.setCellValue("Number")
-                cell.setCellStyle(cellStyle)
-
+                createCell(mainRow, 0, "Code", headerCellStyle)
+                createCell(mainRow, 1, "Number", headerCellStyle)
 
                 for (i in 0 until itemsList.size) {
-                    val cellStyle: CellStyle = workbook.createCellStyle().apply {
-                        fillForegroundColor = HSSFColor.YELLOW.index
-                        fillPattern = HSSFCellStyle.SOLID_FOREGROUND
-                        alignment = CellStyle.ALIGN_CENTER
-                    }
+
+                    val rowsCellStyle = cellStyling(
+                        workbook,
+                        IndexedColors.YELLOW.index,
+                        FillPatternType.SOLID_FOREGROUND,
+                        HorizontalAlignment.CENTER,
+                    )
 
                     val row = sheet.createRow(i + 1)
 
-                    cell = row.createCell(0)
-                    cell.setCellValue(itemsList[i].itemCode)
-                    cell.setCellStyle(cellStyle)
-
-                    cell = row.createCell(1)
-                    cell.setCellValue(itemsList[i].number.toDouble())
-                    cell.setCellStyle(cellStyle)
-
+                    createCell(row, 0, itemsList[i].itemCode, rowsCellStyle)
+                    createCell(row, 1, itemsList[i].number.toDouble(), rowsCellStyle)
                 }
 
-                val filePathDir: String =
-                    context.getExternalFilesDir(null)?.absolutePath + "/Items.xls"
-                val fileOutDir = FileOutputStream(filePathDir)
-                workbook.write(fileOutDir)
-                fileOutDir.close()
-                val file = File(filePathDir)
-                shareFile(context, file)
-
-                val dateTimeFormat = SimpleDateFormat("dd-MM-yyyy HH;mm;ss")
-                val calendar = Calendar.getInstance()
-                val timeNow = dateTimeFormat.format(calendar.time)
-                val fileName = "Items $timeNow.xls"
-
-                val downloadsDir =
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-
-                if (!downloadsDir!!.exists()) {
-                    downloadsDir.mkdirs()
-                }
-
-                val filePath = File(downloadsDir, fileName)
-                val fileOut = FileOutputStream(filePath)
-                workbook.write(fileOut)
-                fileOut.close()
-
+                saveToAppAbsolutePathAndShare(context, workbook)
+                saveToDocuments(workbook)
 
 
                 withContext(Dispatchers.Main) {
@@ -148,14 +148,82 @@ class OfflineModeViewModel(private val inventoryItemOfflineModeDao: InventoryIte
         }
     }
 
+    private fun saveToAppAbsolutePathAndShare(
+        context: Context,
+        workbook: XSSFWorkbook
+    ) {
+        val filePathDir: String =
+            context.getExternalFilesDir(null)?.absolutePath + "/Items.xlsx"
+        val fileOutDir = FileOutputStream(filePathDir)
+        workbook.write(fileOutDir)
+        fileOutDir.close()
+        val file = File(filePathDir)
+        shareFile(context, file)
+    }
 
+    private fun saveToDocuments(workbook: XSSFWorkbook) {
+        val dateTimeFormat = SimpleDateFormat("dd-MM-yyyy HH%mm%ss")
+        val calendar = Calendar.getInstance()
+        val timeNow = dateTimeFormat.format(calendar.time)
+        val fileName = "Items $timeNow.xlsx"
+
+        val downloadsDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+
+        if (!downloadsDir!!.exists()) {
+            downloadsDir.mkdirs()
+        }
+
+        val filePath = File(downloadsDir, fileName)
+        val fileOut = FileOutputStream(filePath)
+        workbook.write(fileOut)
+        fileOut.close()
+    }
+
+    fun test() {
+        // Replace outputFilePath with the actual path where you want to save the file
+        val outputFilePath = "/path/to/output/file.xlsx"
+
+// Create a new XSSFWorkbook
+        val workbook = XSSFWorkbook()
+
+// Create a new sheet in the workbook
+        val sheet = workbook.createSheet("Sheet1")
+
+// Create a header row
+        val headerRow = sheet.createRow(0)
+        headerRow.createCell(0).setCellValue("Name")
+        headerRow.createCell(1).setCellValue("Age")
+        headerRow.createCell(2).setCellValue("Email")
+
+// Create data rows
+        val data = listOf(
+            listOf("Alice", 30, "alice@example.com"),
+            listOf("Bob", 25, "bob@example.com"),
+            listOf("Charlie", 35, "charlie@example.com")
+        )
+
+        for ((i, row) in data.withIndex()) {
+            val dataRow = sheet.createRow(i + 1)
+            dataRow.createCell(0).setCellValue(row[0] as String)
+            dataRow.createCell(2).setCellValue(row[2] as String)
+        }
+
+// Write the workbook to the output file
+        FileOutputStream(outputFilePath).use { outputStream ->
+            workbook.write(outputStream)
+        }
+
+// Close the workbook
+        workbook.close()
+    }
 
     private fun shareFile(context: Context, file: File) {
-        val mimeTypeMap = MimeTypeMap.getSingleton()
-        val ext = MimeTypeMap.getFileExtensionFromUrl(file.name)
-        var type = mimeTypeMap.getExtensionFromMimeType(ext)
-
-        if (type == null) type = "*/*"
+//        val mimeTypeMap = MimeTypeMap.getSingleton()
+//        val ext = MimeTypeMap.getFileExtensionFromUrl(file.name)
+//        var type = mimeTypeMap.getExtensionFromMimeType(ext)
+//
+//        if (type == null) type = "*/*"
 
         val intent = Intent(Intent.ACTION_SEND)
         intent.putExtra(Intent.EXTRA_TEXT, "Sharing File from File Downloader")
